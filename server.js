@@ -1,159 +1,69 @@
-#!/bin/env node
-//  OpenShift sample Node application
 var express = require('express');
-var fs      = require('fs');
+var app = express();
+var bodyParser = require('body-parser');
+var multer = require('multer'); 
 
+//var mongoose = require('mongoose');
+//mongoose.connect('/Users/ryanmckinnon/db');
+/*mongoose.connect('mongodb://localhost/Users/ryanmckinnon/db');
 
-/**
- *  Define the sample application.
- */
-var SampleApp = function() {
+var Cat = mongoose.model('Cat', { name: String });
 
-    //  Scope.
-    var self = this;
+var kitty = new Cat({ name: 'Zildjian' });
+kitty.save(function (err) {
+  if (err) // ...
+  console.log('meow');
+}); */
 
+app.use(bodyParser.json()); // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(multer()); // for parsing multipart/form-data
 
-    /*  ================================================================  */
-    /*  Helper functions.                                                 */
-    /*  ================================================================  */
+var courseArray =
+ [{ name: "Java 101", category: "PROG", dateCreated: "1/1/2015", description: "Wow" },
+  { name: "MongoDB 101", category: "DB", dateCreated: "2/1/2015", description: "Good" },
+  { name: "Express 101", category: "PROG", dateCreated: "3/1/2015", description: "Better" },
+  { name: "AngularJS 101", category: "WEB", dateCreated: "4/1/2015", description: "Best" },
+  { name: "NodeJS 101", category: "PROG", dateCreated: "5/1/2015", description: "Awesome" }
+];
 
-    /**
-     *  Set up server IP address and port # using env variables/defaults.
-     */
-    self.setupVariables = function() {
-        //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-        self.port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+// node.js API endpoints
 
-        if (typeof self.ipaddress === "undefined") {
-            //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
-            //  allows us to run/test the app locally.
-            console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
-            self.ipaddress = "127.0.0.1";
-        };
-    };
+// return all courses
+app.get('/api/course', function(req, res) {
+	res.json(courseArray);
+});
 
+// return course at given index
+app.get('/api/course/:index', function(req, res) {
+	res.json(courseArray[req.params.index]);
+});
 
-    /**
-     *  Populate the cache.
-     */
-    self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
-        }
+// add new course to list of courses
+app.post('/api/course', function (req, res) {
+	var newCourse = req.body;
+	courseArray.push(newCourse);
+	res.json(courseArray);
+});
 
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
-    };
+// delete course at given index
+app.delete('/api/course/:index', function(req, res) {
+	courseArray.splice(req.params.index, 1);
+	res.json(courseArray)
+});
 
+// update course at given index
+app.put('/api/course/:index', function (req, res) {
+	var editedCourse = req.body;
+	courseArray[req.params.index] = editedCourse;
+	res.json(courseArray);
+});
 
-    /**
-     *  Retrieve entry (content) from cache.
-     *  @param {string} key  Key identifying content to retrieve from cache.
-     */
-    self.cache_get = function(key) { return self.zcache[key]; };
+// Allow user to access profile.html and other static resources
+app.use(express.static(__dirname + '/public'));
 
+// define IP and port to listen on 
+var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
 
-    /**
-     *  terminator === the termination handler
-     *  Terminate server on receipt of the specified signal.
-     *  @param {string} sig  Signal to terminate on.
-     */
-    self.terminator = function(sig){
-        if (typeof sig === "string") {
-           console.log('%s: Received %s - terminating sample app ...',
-                       Date(Date.now()), sig);
-           process.exit(1);
-        }
-        console.log('%s: Node server stopped.', Date(Date.now()) );
-    };
-
-
-    /**
-     *  Setup termination handlers (for exit and a list of signals).
-     */
-    self.setupTerminationHandlers = function(){
-        //  Process on exit and signals.
-        process.on('exit', function() { self.terminator(); });
-
-        // Removed 'SIGPIPE' from the list - bugz 852598.
-        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
-         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-        ].forEach(function(element, index, array) {
-            process.on(element, function() { self.terminator(element); });
-        });
-    };
-
-
-    /*  ================================================================  */
-    /*  App server functions (main app logic here).                       */
-    /*  ================================================================  */
-
-    /**
-     *  Create the routing table entries + handlers for the application.
-     */
-    self.createRoutes = function() {
-        self.routes = { };
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
-        };
-    };
-
-
-    /**
-     *  Initialize the server (express) and create the routes and register
-     *  the handlers.
-     */
-    self.initializeServer = function() {
-        self.createRoutes();
-        self.app = express.createServer();
-
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
-    };
-
-
-    /**
-     *  Initializes the sample application.
-     */
-    self.initialize = function() {
-        self.setupVariables();
-        self.populateCache();
-        self.setupTerminationHandlers();
-
-        // Create the express server and routes.
-        self.initializeServer();
-    };
-
-
-    /**
-     *  Start the server (starts up the sample application).
-     */
-    self.start = function() {
-        //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
-            console.log('%s: Node server started on %s:%d ...',
-                        Date(Date.now() ), self.ipaddress, self.port);
-        });
-    };
-
-};   /*  Sample Application.  */
-
-
-
-/**
- *  main():  Main code.
- */
-var zapp = new SampleApp();
-zapp.initialize();
-zapp.start();
-
+app.listen(port, ip);
