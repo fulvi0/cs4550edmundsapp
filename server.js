@@ -20,14 +20,14 @@ var WebSiteSchema = new mongoose.Schema({
 var WebSiteModel = mongoose.model('WebSite', WebSiteSchema);
 
 // adds a new website to the database (shows user response doc)
-/*
-app.get('/api/website/:name', function (req, res) {
+
+app.get('/api/website/create/:name', function (req, res) {
 	var website = new WebSiteModel({name: req.params.name });
 	website.save(function (err, doc) {
 		res.json(doc);
 	});
 });
-*/
+
 
 // retrieve websites by ID
 app.get('/api/website/:id', function (req, res) {
