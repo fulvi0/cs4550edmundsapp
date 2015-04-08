@@ -8,8 +8,9 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
 
-// disabling to test remotely
-//mongoose.connect('mongodb://localhost/db');
+// dynamic connection string 
+var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/db';
+mongoose.connect(connectionString);
 
 var WebSiteSchema = new mongoose.Schema({
 	name: String,
