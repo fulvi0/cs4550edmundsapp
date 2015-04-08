@@ -2,22 +2,46 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var multer = require('multer'); 
-
-//var mongoose = require('mongoose');
-//mongoose.connect('/Users/ryanmckinnon/db');
-/*mongoose.connect('mongodb://localhost/Users/ryanmckinnon/db');
-
-var Cat = mongoose.model('Cat', { name: String });
-
-var kitty = new Cat({ name: 'Zildjian' });
-kitty.save(function (err) {
-  if (err) // ...
-  console.log('meow');
-}); */
+var mongoose = require('mongoose');
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
+
+// disabling to test remotely
+//mongoose.connect('mongodb://localhost/db');
+
+var WebSiteSchema = new mongoose.Schema({
+	name: String,
+	created: {type: Date, default: Date.now}
+}, {collection: 'website'});
+
+var WebSiteModel = mongoose.model('WebSite', WebSiteSchema);
+
+// adds a new website to the database (shows user response doc)
+/*
+app.get('/api/website/:name', function (req, res) {
+	var website = new WebSiteModel({name: req.params.name });
+	website.save(function (err, doc) {
+		res.json(doc);
+	});
+});
+*/
+
+// retrieve websites by ID
+app.get('/api/website/:id', function (req, res) {
+	WebSiteModel.findById(req.params.id, function (err, sites) {
+		res.json(sites);
+	});
+});
+
+// retrieve all websites, show them all to user
+app.get('/api/website', function (req, res) {
+	WebSiteModel.find(function (err, sites) {
+		res.json(sites);
+	});
+
+});
 
 var courseArray =
  [{ name: "Java 101", category: "PROG", dateCreated: "1/1/2015", description: "Wow" },
@@ -61,6 +85,11 @@ app.put('/api/course/:index', function (req, res) {
 
 // Allow user to access profile.html and other static resources
 app.use(express.static(__dirname + '/public'));
+
+app.get('/process', function(req, res) {
+	res.json(process.env);
+
+});
 
 // define IP and port to listen on 
 var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
