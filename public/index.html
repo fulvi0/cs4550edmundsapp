@@ -16,17 +16,27 @@
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">-->
 
         <script type="text/javascript" src="js/app.js"></script>
+
         <script type="text/javascript" src="views/login/js/login.js"></script>
+        <script type="text/javascript" src="views/register/js/register.js"></script>
+
 	</head>
 	
     <body ng-app="PassportApp">
-        <nav>
+        <nav ng-controller="NavCtrl">
             <a href="#home">Home</a>
-            <a href="#login">Login</a>
-            <a href="#logout">Logout</a>
-            <a href="#register">Register</a>
-            <a href="#profile">Profile</a>
+            <span ng-show="!currentUser">
+
+                <a href="#login">Login</a>
+                <a href="#register">Register</a>
+            </span>
+            <span ng-show="currentUser">
+                <a href="#profile">Profile</a>
+                <a href="#logout" ng-click="logout()">Logout</a>
+            </span>
+
         </nav>
+        {{currentUser}}
         <div ng-view>
         </div>
         <!--<div ng-controller='NavCtrl'>

@@ -3,17 +3,57 @@ var app = express();
 var bodyParser = require('body-parser');
 var multer = require('multer'); 
 var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var cookieParser = require('cookie-parser');
+var session = require('express-session')
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 app.use(multer()); // for parsing multipart/form-data
 
-// specify db connection string
-var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/db';
-mongoose.connect(connectionString);
+app.use(session({ secret: "this is the secret"}));
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Allow user to access profile.html and other static resources
 app.use(express.static(__dirname + '/public'));
+
+passport.use(new LocalStrategy(
+function(username, password, done)
+{
+	console.log("in passport");
+	UserModel.findOne({username: username, password: password}, function (err, user){
+		if(user)
+		{
+			console.log("in passport");
+			// if user is found return user
+						console.log(user);
+
+			return done(null, user);
+		}
+		// otherwise we return FALSEEE
+		return done(null, false, {message: 'Unable to login'});
+	});
+}));
+
+passport.serializeUser(function(user, done){
+	done(null, user);
+});
+
+passport.deserializeUser(function(user, done){
+	done(null, user);
+});
+
+
+
+/*
+ * DATABASE CONNECTION / SCHEMA
+ */
+var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/db';
+var db = mongoose.connect(connectionString); 
+
 
 var WebSiteSchema = new mongoose.Schema({
 	name: String,
@@ -30,6 +70,27 @@ app.get('/api/website/create/:name', function (req, res) {
 	});
 });
 
+var UserSchema = new mongoose.Schema({
+	username: String,
+	password: String,
+	email: String,
+	firstName: String,
+	lastName: String,
+	roles: [String]
+});
+
+var UserModel = mongoose.model("UserModel", UserSchema);
+
+
+//var admin = new UserModel({username: "alice", password: "alice", firstName: "Alice", lastName: "Wonderlane", roles:["admin"]});
+//var student = new UserModel({username: "bobmarley", password: "marley", firstName: "Bob", lastName: "Marley", roles:["student"]});
+
+//admin.save();
+//student.save();
+
+/*
+ * API DEFINITIONS
+ */
 
 // retrieve websites by ID
 app.get('/api/website/:id', function (req, res) {
@@ -46,9 +107,43 @@ app.get('/api/website', function (req, res) {
 
 });
 
-app.post("/login", function(req, res){
-	console.log("calling /login");
-	console.log(req.body)
+app.post("/login", passport.authenticate('local'), function(req, res){
+	res.json(req.user);
+});
+
+app.get("/loggedin", function(req, res){
+	res.send(req.isAuthenticated() ? req.user : '0');
+});
+
+app.post("/logout", function(req, res){
+	req.logOut();
+	res.send(200);
+});
+
+
+
+app.post("/register", function (req, res){
+	UserModel.findOne({username: req.body.username}, function(err, user){
+		if(user)
+		{
+			res.json(null);
+			return;
+		}
+		else
+		{
+			var newUser = new UserModel(req.body);
+			newUser.save(function(err, user){
+				req.login(user, function(err)
+				{
+					if(err) {return next(err); }
+					res.json(user);
+				});
+				
+			});
+		}
+	});
+	var newUser = req.body;
+	console.log(newUser);
 });
 
 app.get('/process', function(req, res) {
