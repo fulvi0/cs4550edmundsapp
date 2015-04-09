@@ -12,6 +12,9 @@ app.use(multer()); // for parsing multipart/form-data
 var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/db';
 mongoose.connect(connectionString);
 
+// Allow user to access profile.html and other static resources
+app.use(express.static(__dirname + '/public'));
+
 var WebSiteSchema = new mongoose.Schema({
 	name: String,
 	created: {type: Date, default: Date.now}
@@ -20,7 +23,6 @@ var WebSiteSchema = new mongoose.Schema({
 var WebSiteModel = mongoose.model('WebSite', WebSiteSchema);
 
 // adds a new website to the database (shows user response doc)
-
 app.get('/api/website/create/:name', function (req, res) {
 	var website = new WebSiteModel({name: req.params.name });
 	website.save(function (err, doc) {
@@ -44,6 +46,19 @@ app.get('/api/website', function (req, res) {
 
 });
 
+app.get('/process', function(req, res) {
+	res.json(process.env);
+
+});
+
+// define IP and port to listen on 
+var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+
+app.listen(port, ip);
+
+
+/*
 var courseArray =
  [{ name: "Java 101", category: "PROG", dateCreated: "1/1/2015", description: "Wow" },
   { name: "MongoDB 101", category: "DB", dateCreated: "2/1/2015", description: "Good" },
@@ -51,9 +66,7 @@ var courseArray =
   { name: "AngularJS 101", category: "WEB", dateCreated: "4/1/2015", description: "Best" },
   { name: "NodeJS 101", category: "PROG", dateCreated: "5/1/2015", description: "Awesome" }
 ];
-
-// node.js API endpoints
-
+// Old API endpoints to serve as example
 // return all courses
 app.get('/api/course', function(req, res) {
 	res.json(courseArray);
@@ -83,17 +96,4 @@ app.put('/api/course/:index', function (req, res) {
 	courseArray[req.params.index] = editedCourse;
 	res.json(courseArray);
 });
-
-// Allow user to access profile.html and other static resources
-app.use(express.static(__dirname + '/public'));
-
-app.get('/process', function(req, res) {
-	res.json(process.env);
-
-});
-
-// define IP and port to listen on 
-var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
-var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
-
-app.listen(port, ip);
+*/
