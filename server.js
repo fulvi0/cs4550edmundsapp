@@ -46,6 +46,11 @@ app.get('/api/website', function (req, res) {
 
 });
 
+app.post("/login", function(req, res){
+	console.log("calling /login");
+	console.log(req.body)
+});
+
 app.get('/process', function(req, res) {
 	res.json(process.env);
 

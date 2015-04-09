@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Login</title>
+		<title>Home</title>
 
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
@@ -16,12 +16,27 @@
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">-->
 
         <script type="text/javascript" src="js/app.js"></script>
+        <script type="text/javascript" src="views/login/js/login.js"></script>
 	</head>
 	
     <body ng-app="PassportApp">
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#login">Login</a>
+            <a href="#logout">Logout</a>
+            <a href="#register">Register</a>
+            <a href="#profile">Profile</a>
+        </nav>
         <div ng-view>
-            LOGIN
         </div>
+        <!--<div ng-controller='NavCtrl'>
+            <a href="#/">Home</a>
+            <a href="#/login" ng-show='!currentUser'> Login |</a>
+            <a ng-click="logout" ng-show='currentUser'>Logout | </a>
+            <a href="#/profile">Profile</a>
+
+            INDEX
+        </div>-->
     </body>
 
         <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>-->
