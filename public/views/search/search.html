@@ -8,9 +8,12 @@
     <body ng-app="SearchCtrl">
     	<div class="container">
 	        <h1>Search Vehicles</h1>
-	        <select ng-model="currentMake" class="form-control" id="select">
-            	<option ng-repeat="make in makes" value="{{make.niceName}}">{{make.name}}</option>
-            </select>
+
+			<select ng-options="make.niceName as make.name for make in makes"
+			        ng-change="updateSearchResults()"
+			        ng-model="currentMake"
+			        class="form-control" id="select">
+			</select>
 
 	        <table class="table table-striped">
 	            <tbody ng-repeat="model in models">
