@@ -79,6 +79,11 @@ var UserSchema = new mongoose.Schema({
 	roles: [String]
 });
 
+/*var CarSchema = new mongoose.Schema({
+	id: String,
+	user_id_favorites: [String]
+});*/
+
 var UserModel = mongoose.model("UserModel", UserSchema);
 
 
@@ -156,7 +161,6 @@ var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
 
 app.listen(port, ip);
-
 
 /*
 var courseArray =

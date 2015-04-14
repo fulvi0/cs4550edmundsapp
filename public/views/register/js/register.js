@@ -9,6 +9,7 @@ app.controller("RegisterCtrl", function($rootScope, $scope, $http){
 	        $http.post('/register', user)
 	        .success(function(response){
 	        	$rootScope.currentUser = user;
+                $location.url("/profile");
 	        	console.log(response);
 	        });
     	}

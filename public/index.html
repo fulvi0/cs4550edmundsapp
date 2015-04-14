@@ -3,8 +3,9 @@
 	<head>
 		<title>Home</title>
 
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css"></a>
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">-->
+        <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">-->
 
         <script src="//code.jquery.com/jquery-1.10.2.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
@@ -18,13 +19,50 @@
         <script type="text/javascript" src="js/app.js"></script>
 
         <script type="text/javascript" src="views/login/js/login.js"></script>
+        <script type="text/javascript" src="views/list/js/list.js"></script>
+
         <script type="text/javascript" src="views/register/js/register.js"></script>
 
 	</head>
 	
     <body ng-app="PassportApp">
-        <nav ng-controller="NavCtrl">
-            <a href="#home">Home</a>
+        <div ng-controller="NavCtrl" class="navbar navbar-default navbar-fixed-top">
+          <div class="container">
+            <div class="navbar-header">
+              <a href="#home" class="navbar-brand">Home</a>
+              <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+            </div>
+            <div class="navbar-collapse collapse" id="navbar-main">
+              <ul class="nav navbar-nav">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#list">List</a></li>
+              </ul>
+
+              <ul class="nav navbar-nav navbar-right">
+                    <li ng-show="!currentUser"><a href="#login">Login</a></li>
+                    <li ng-show="!currentUser"><a href="#register">Register</a></li>
+                    <li ng-show="currentUser"><a href="#profile">Profile</a></li>
+                    <li ng-show="currentUser"><a href="#logout" ng-click="logout()">Logout</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <div class="container">
+            <div ng-view>
+            </div>
+        </div>
+
+
+
+        <!--<nav ng-controller="NavCtrl">
+            <a href="#home" ng-click="searchTitle()">Home</a>
+            <a href="#list">List</a>
             <span ng-show="!currentUser">
 
                 <a href="#login">Login</a>
@@ -36,10 +74,11 @@
             </span>
 
         </nav>
-        {{currentUser}}
-        <div ng-view>
+        <div class="container">
+            <div ng-view>
+            </div>
         </div>
-        <!--<div ng-controller='NavCtrl'>
+        <div ng-controller='NavCtrl'>
             <a href="#/">Home</a>
             <a href="#/login" ng-show='!currentUser'> Login |</a>
             <a ng-click="logout" ng-show='currentUser'>Logout | </a>
@@ -47,7 +86,7 @@
 
             INDEX
         </div>-->
-    </body>
+
 
         <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>-->
     </body>

@@ -21,14 +21,18 @@ app.config(function($routeProvider) {
 			templateUrl: 'views/register/register.html',
 			controller: 'RegisterCtrl'
 		})
+		.when('/list', {
+			templateUrl: 'views/list/list.html',
+			controller: 'ListCtrl'
+		})
 		.otherwise({
 			redirectTo: '/home'
 		})
 
 });
 
-var checkLoggedin = function($q, $timeout, $http, $location, $rootScope)
-{
+var checkLoggedin = function($q, $timeout, $http, $location, $rootScope){
+
 	var deferred = $q.defer()
 
 	$http.get('loggedin').success(function(user)
@@ -59,7 +63,17 @@ app.controller("NavCtrl", function($rootScope, $scope, $http, $location){
 			$location.url("/home");
 		});
 	}
+
+	$scope.searchTitle = function()
+    {        
+        $http.jsonp("https://api.edmunds.com/api/vehicle/v2/audi/models?state=used&year=2013&category=Sedan&view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc")
+        .success(function (response) {
+            log(response[0]);
+        });
+    }
 });
+
+
 
 /*app.controller('LoginCtrl', function($scope, $http, $location, SecurityService)
 {

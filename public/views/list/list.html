@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>List</title>
+	</head>
+	
+    <body>
+    	<div class="container">
+	        <h1>List</h1>
+
+
+	        <table class="table table-striped">
+	            <tbody ng-repeat="model in models">
+	                <tr>
+	                    <td>{{model.id}}</td>
+	                    <td>{{model.name}}</td>
+	                    <td>
+	                        <button ng-click="addToFavorites(movie)" class="btn btn-warning">
+	                            <span class="glyphicon glyphicon-star"></span>
+	                        </button>
+	                    </td>
+	                </tr>
+	            </tbody>
+	        </table>
+    	</container>
+
+    </body>
+</html>
