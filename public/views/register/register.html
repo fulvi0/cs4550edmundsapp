@@ -2,15 +2,35 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Register</title>
+        <link rel="stylesheet" href="views/register/css/register.css"></a>
+
 	</head>
 	
     <body>
-        <h1>REGISTER</h1>
+        <div class="col-lg-12" id="register-form">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6 well bs-component">
+                <h1 id="register-title">Register</h1>
+                <label class="control-label" for="inputDefault">Username:</label>
+                <input ng-model="user.username" type="text" class="form-control" id="inputDefault"/><br/>
+                <label class="control-label" for="inputDefault">Password:</label>
+                <input ng-model="user.password" type="password" class="form-control" id="inputDefault"/><br/>
+                <label class="control-label" for="inputDefault">Confirm Password:</label>
+                <input ng-model="user.password2" type="password" class="form-control" id="inputDefault"/><br/>
+                <button ng-click="register(user)" class="btn btn-success">Register</button>
+            </div>
+            <div class="col-lg-3"></div>
+        </div>
+
+
+
+        <!--<h1>REGISTER</h1>
 
         <input ng-model="user.username"/><br/>
         <input ng-model="user.password"/><br/>
         <input ng-model="user.password2"/><br/>
 
-        <button ng-click="register(user)">Register</button>
+        <button ng-click="register(user)">Register</button>-->
     </body>
+
 </html>

@@ -1,4 +1,4 @@
-app.controller("RegisterCtrl", function($rootScope, $scope, $http){
+app.controller("RegisterCtrl", function($location, $rootScope, $scope, $http){
     $scope.register = function(user)
     {
         console.log(user);

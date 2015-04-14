@@ -9,7 +9,8 @@ app.config(function($routeProvider) {
 		})
 		.when('/login', {
 			templateUrl: 'views/login/login.html',
-			controller: 'LoginCtrl'
+			controller: 'LoginCtrl',
+			css: 'views/login/css/login.css'
 		})
 		.when('/profile', {
 			templateUrl: 'views/profile.html',
@@ -19,11 +20,13 @@ app.config(function($routeProvider) {
 		})
 		.when('/register', {
 			templateUrl: 'views/register/register.html',
-			controller: 'RegisterCtrl'
+			controller: 'RegisterCtrl',
+			css: 'views/register/css/register.css'
 		})
-		.when('/list', {
-			templateUrl: 'views/list/list.html',
-			controller: 'ListCtrl'
+		.when('/search', {
+			templateUrl: 'views/search/search.html',
+			controller: 'SearchCtrl',
+			css: 'views/search/css/search.css'
 		})
 		.otherwise({
 			redirectTo: '/home'

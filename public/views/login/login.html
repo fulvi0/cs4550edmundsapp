@@ -2,13 +2,21 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Login</title>
+        <link rel="stylesheet" href="views/login/css/login.css"></a>
 	</head>
 	
     <body>
-        <h1>LOGIN</h1>
-
-        <input ng-model="user.username"/><br/>
-        <input ng-model="user.password"/><br/>
-        <button ng-click="login(user)">Login</button>
+        <div class="col-lg-12" id="login-form">
+            <div class="col-lg-3"></div>
+            <div class="col-lg-6 well bs-component">
+                <h1 id="login-title">LOGIN</h1>
+                <label class="control-label" for="inputDefault">Username:</label>
+                <input ng-model="user.username" type="text" class="form-control" id="inputDefault"/><br/>
+                <label class="control-label" for="inputDefault">Password:</label>
+                <input ng-model="user.password" type="password" class="form-control" id="inputDefault"/><br/>
+                <button ng-click="login(user)" class="btn btn-success">Login</button>
+            </div>
+            <div class="col-lg-3"></div>
+        </div>
     </body>
 </html>

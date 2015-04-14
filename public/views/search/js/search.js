@@ -1,4 +1,4 @@
-app.controller("ListCtrl", function($location, $rootScope, $scope, $http){
+app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
     
     $http.jsonp("https://api.edmunds.com/api/vehicle/v2/bmw/models?state=new&year=2015&category=Sedan&view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
         .success(function (response) {
