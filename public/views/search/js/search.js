@@ -25,7 +25,17 @@ app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
     {
         console.log("attempting to update, current model is: ")
         console.log($scope.currentMake);
-        $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + $scope.currentYear + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
+        console.log("current year is: ")
+        console.log($scope.currentYear);
+
+        // year is an optional parameter, so we need to format it properly if it exists
+        var yearJson = ""
+        if ($scope.currentYear !== "")
+        {
+            yearJson = "year=" + $scope.currentYear + "&";
+        }
+
+        $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + yearJson + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
         .success(function (response) {
             $scope.models = response.models
             console.log("object is ");
