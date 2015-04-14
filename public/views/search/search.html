@@ -5,10 +5,12 @@
 		<link rel="stylesheet" href="views/search/css/search.css"></a>
 	</head>
 	
-    <body>
+    <body ng-app="SearchCtrl">
     	<div class="container">
 	        <h1>Search Vehicles</h1>
-
+	        <select ng-model="currentMake" class="form-control" id="select">
+            	<option ng-repeat="make in makes" value="{{make.niceName}}">{{make.name}}</option>
+            </select>
 
 	        <table class="table table-striped">
 	            <tbody ng-repeat="model in models">

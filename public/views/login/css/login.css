@@ -6,3 +6,7 @@
 	text-align: center;
 	margin-top: 0px;
 }
+
+body {
+    background-image: url("r8bg.jpg");
+}
