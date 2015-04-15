@@ -7,8 +7,6 @@ app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
 
     yearJson = "year=" + $scope.currentYear + "&";
 
-    //models are a bit hard to get to,
-
     // retrieve list of cars to display
     $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + yearJson + $scope.currentCategory + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
     //$http.jsonp("https://api.edmunds.com/api/vehicle/v2/bmw/models?state=new&year=2015&category=Sedan&view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
@@ -50,5 +48,14 @@ app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
             console.log("object is ");
             console.log(response.models);
         });
+    }
+
+    $scope.goToDetailsPage = function(vehicleID)
+    {
+        console.log("Navigating to details page for vehicle " + vehicleID);
+
+        // set rootScope to contain vehicle ID we will view
+        $rootScope.currentDetailID = vehicleID;
+        $location.url("/details");
     }
 });

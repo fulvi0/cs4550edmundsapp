@@ -28,6 +28,11 @@ app.config(function($routeProvider) {
 			controller: 'SearchCtrl',
 			css: 'views/search/css/search.css'
 		})
+		.when('/details', {
+			templateUrl: 'views/details/details.html',
+			controller: 'DetailsCtrl',
+			css: 'views/details/css/details.css'
+		})
 		.otherwise({
 			redirectTo: '/home'
 		})

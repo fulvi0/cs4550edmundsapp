@@ -70,7 +70,6 @@
 	                						<td>Model</td>
 	                						<td>Horsepower</td>
 											<td>Torque</td>
-	                						<td>MPG</td>
 	                					</tr>
 	                				</thead>
 	                				<!-- we restrict search to a single year so year[0] is always what we need to access -->
@@ -79,7 +78,16 @@
 	                						<td>{{vehicle.name}}</td>
 	                						<td>row2</td>
 											<td>row3</td>
-	                						<td>row4</td>
+	                						<td>
+	                							<button ng-click="" class="btn btn-info pull-right">
+	                							Favorite
+	                        					</button>
+	                        				</td>
+	                						<td>
+	                							<button ng-click="goToDetailsPage(vehicle.id)" class="btn btn-info pull-right">
+	                							More Info
+	                        					</button>
+	                        				</td>
 	                					</tr>
 	                				<tbody>
 	                			</table>
