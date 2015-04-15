@@ -30,7 +30,7 @@ app.config(function($routeProvider) {
 		})
 		.when('/details', {
 			templateUrl: 'views/details/details.html',
-			controller: 'DetailsCtrl',
+			controller: 'detailsCtrl',
 			css: 'views/details/css/details.css'
 		})
 		.otherwise({

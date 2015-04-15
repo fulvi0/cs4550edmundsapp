@@ -1,4 +1,4 @@
-app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
+app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scope, $http){
     
     // initially display default make and year and no category
     $scope.currentMake = "bmw";
@@ -57,5 +57,19 @@ app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
         // set rootScope to contain vehicle ID we will view
         $rootScope.currentDetailID = vehicleID;
         $location.url("/details");
+    }
+
+    $scope.favoriteCar = function(username, vehicleID)
+    {
+        console.log("username" + username + " " + "vehicleID " + vehicleID);
+        $http.post('/favoriteCar/' + username + '/' + vehicleID)
+        .success(function(response){
+            console.log($rootScope.currentUser); 
+
+            // modify local current user so we don't log current user out
+            $rootScope.currentUser.favoritedCars.push(vehicleID);
+
+            //$rootScope.currentUser = response;
+        });
     }
 });

@@ -28,9 +28,9 @@ function(username, password, done)
 		if(user)
 		{
 			console.log("in passport");
-			// if user is found return user
-						console.log(user);
+			console.log(user);
 
+			// if user is found return user
 			return done(null, user);
 		}
 		// otherwise we return FALSEEE
@@ -73,20 +73,21 @@ app.get('/api/website/create/:name', function (req, res) {
 var UserSchema = new mongoose.Schema({
 	username: String,
 	password: String,
-	email: String,
-	firstName: String,
-	lastName: String,
-	roles: [String],
+	// list of edmunds vehicle IDs the user has favorited
 	favoritedCars: [Number]
 });
 
+var CarSchema = new mongoose.Schema({
+	vehicleId: Number,
+	userFavorites: [String]
+});
 
-/*var CarSchema = new mongoose.Schema({
-	id: String,
-	user_id_favorites: [String]
-});*/
-
+// model for keeping track of user data
 var UserModel = mongoose.model("UserModel", UserSchema);
+
+// model for keeping track of favorited car data
+var CarModel = mongoose.model("CarModel", CarSchema);
+
 
 
 //var admin = new UserModel({username: "alice", password: "alice", firstName: "Alice", lastName: "Wonderlane", roles:["admin"]});
@@ -95,25 +96,13 @@ var UserModel = mongoose.model("UserModel", UserSchema);
 //admin.save();
 //student.save();
 
+////var testCar = new CarModel({vehicleId: 200704634, userFavorites: []})
+//testCar.save();
 /*
  * API DEFINITIONS
  */
 
-// retrieve websites by ID
-app.get('/api/website/:id', function (req, res) {
-	WebSiteModel.findById(req.params.id, function (err, sites) {
-		res.json(sites);
-	});
-});
-
-// retrieve all websites, show them all to user
-app.get('/api/website', function (req, res) {
-	WebSiteModel.find(function (err, sites) {
-		res.json(sites);
-	});
-
-});
-
+// login / logout functionality
 app.post("/login", passport.authenticate('local'), function(req, res){
 	res.json(req.user);
 });
@@ -127,10 +116,9 @@ app.post("/logout", function(req, res){
 	res.send(200);
 });
 
-
-
 app.post("/register", function (req, res){
 	UserModel.findOne({username: req.body.username}, function(err, user){
+		// if user already exists, return null
 		if(user)
 		{
 			res.json(null);
@@ -153,16 +141,74 @@ app.post("/register", function (req, res){
 	console.log(newUser);
 });
 
+// retrieve user content for a given Edmunds vehicle ID
+app.get("/getCarContent/:vehicleId", function (req, res){
+	CarModel.findOne({vehicleId : req.params.vehicleId}, function(err, car){
+		res.json(car);
+	});
+});
+
+// favorite a car, add car ID to user entry and username to car entry
+app.post("/favoriteCar/:username/:vehicleId", function(req, res){
+	// add edmunds car ID to user entry
+	UserModel.findOne({username : req.params.username}, function (err, user){
+		// only let user favorite car if they haven't favorited it already
+		if (user.favoritedCars.indexOf(req.params.vehicleId) == -1){
+			user.favoritedCars.push(req.params.vehicleId);
+			user.save();
+
+			//res.json(user);
+		}
+	});
+
+	// add username to car entry
+	CarModel.findOne({vehicleId : req.params.vehicleId}, function(err, car){
+		// check whether this car has been added yet
+		if (car){
+			// only save user in car entry if they have not favorited before
+			if (car.userFavorites.indexOf(req.params.username) == -1)
+			{
+				car.userFavorites.push(req.params.username);
+				car.save();
+			}
+		} else {
+			var newCar = new CarModel({vehicleId: req.params.vehicleId, userFavorites: [req.params.username]});
+			newCar.save();
+		}
+	});
+
+	//console.log("sending current user from favorites");
+	//console.log(currentUser);
+	res.send(200);
+});
+
+// get processes running
 app.get('/process', function(req, res) {
 	res.json(process.env);
-
 });
 
 // define IP and port to listen on 
 var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
-
 app.listen(port, ip);
+
+
+
+
+// API calls from class, just for reference....
+// retrieve websites by ID
+app.get('/api/website/:id', function (req, res) {
+	WebSiteModel.findById(req.params.id, function (err, sites) {
+		res.json(sites);
+	});
+});
+
+// retrieve all websites, show them all to user
+app.get('/api/website', function (req, res) {
+	WebSiteModel.find(function (err, sites) {
+		res.json(sites);
+	});
+});
 
 /*
 var courseArray =

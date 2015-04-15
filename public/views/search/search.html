@@ -96,9 +96,14 @@
 	                						<td>{{vehicle.name}}</td>
 	                						<td>row2</td>
 											<td>row3</td>
-	                						<td>
-	                							<button ng-click="" class="btn btn-info pull-right">
+	                						<td ng-if="currentUser && currentUser.favoritedCars.indexOf(vehicle.id) == -1">
+	                							<button ng-click="favoriteCar(currentUser.username, vehicle.id)" class="btn btn-info pull-right">
 	                							Favorite
+	                        					</button>
+	                        				</td>
+	                        				<td ng-if="currentUser && currentUser.favoritedCars.indexOf(vehicle.id) > -1">
+	                							<button ng-click="" class="btn btn-info pull-right">
+	                							Unfavorite
 	                        					</button>
 	                        				</td>
 	                						<td>
