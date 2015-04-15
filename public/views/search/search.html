@@ -18,7 +18,6 @@
 			<select ng-model="currentYear"
 			        ng-change="updateSearchResults()"
 			        class="form-control" id="select">
-			        <option value="">All Years</option>
 			        <option value="2015">2015</option>
 			        <option value="2014">2014</option>
 			        <option value="2013">2013</option>
@@ -42,16 +41,28 @@
 			        <option value="1995">1995</option>
 			</select>
 
-	        <table class="table table-striped">
+			<select ng-model="currentCategory"
+			        ng-change="updateSearchResults()"
+			        class="form-control" id="select">
+			        <option value="">All Types</option>
+			        <option value="Coupe">Coupe</option>
+			        <option value="Convertible">Convertible</option>
+			        <option value="Sedan">Sedan</option>
+			</select>
+
+	        <table class="table">
 	            <tbody ng-repeat="model in models">
 	                <tr>
-	                    <td>{{model.id}}</td>
 	                    <td>{{model.name}}</td>
 	                    <td>
-	                        <button ng-click="addToFavorites(movie)" class="btn btn-warning">
-	                            <span class="glyphicon glyphicon-star"></span>
+	                        <button ng-click="" class="btn btn-info pull-right" class="clickable" data-toggle="collapse" data-target="#{{model.niceName}}">
+	                        	View All Models
+	                            <!--<span class="glyphicon glyphicon-star">+</span>-->
 	                        </button>
 	                    </td>
+	                </tr>
+	                <tr>
+	                	<td><div id="{{model.niceName}}" class="collapse">Hidden by default</div></td>
 	                </tr>
 	            </tbody>
 	        </table>

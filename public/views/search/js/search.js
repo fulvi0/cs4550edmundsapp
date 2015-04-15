@@ -1,11 +1,12 @@
 app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
     
+    // initially display default make and year and no category
     $scope.currentMake = "bmw";
-    $scope.currentYear = ""
-    //"year=" + 2013 + "&";
+    $scope.currentYear = "2015";
+    $scope.currentCategory = "";
 
-    // retrieve list of cars
-    $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + $scope.currentYear + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
+    // retrieve list of cars to display
+    $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + $scope.currentYear + $scope.currentCategory + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
     //$http.jsonp("https://api.edmunds.com/api/vehicle/v2/bmw/models?state=new&year=2015&category=Sedan&view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
         .success(function (response) {
             $scope.models = response.models
@@ -13,7 +14,7 @@ app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
             console.log(response.models);
         });
 
-    //retrieve
+    //retrieve list of makes to filter from
     $http.jsonp("https://api.edmunds.com/api/vehicle/v2/makes?view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
             .success(function (response) {
             $scope.makes = response.makes
@@ -21,6 +22,7 @@ app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
             console.log(response.makes);
         });
 
+    // refresh the table of cars
     $scope.updateSearchResults = function()
     {
         console.log("attempting to update, current model is: ")
@@ -28,34 +30,21 @@ app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
         console.log("current year is: ")
         console.log($scope.currentYear);
 
-        // year is an optional parameter, so we need to format it properly if it exists
-        var yearJson = ""
-        if ($scope.currentYear !== "")
+
+        yearJson = "year=" + $scope.currentYear + "&";
+
+        // category json might be empty, if not it should be formatted properly
+        var categoryJson = ""
+        if ($scope.currentCategory !== "")
         {
-            yearJson = "year=" + $scope.currentYear + "&";
+            categoryJson = "category=" + $scope.currentCategory + "&";
         }
 
-        $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + yearJson + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
+        $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + yearJson + categoryJson + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
         .success(function (response) {
             $scope.models = response.models
             console.log("object is ");
             console.log(response.models);
         });
-
     }
-
-
-    /*$scope.populateList = function()
-    {
-        $scope.cars = [];
-
-        $http.jsonp("https://api.edmunds.com/api/vehicle/v2/bmw/models?state=new&year=2015&category=Sedan&view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc")
-        .success(function (response) {
-            $scope.cars = response[0];
-            log("object is ");
-            log(response[0]);
-        });
-
-    };*/
-
 });
