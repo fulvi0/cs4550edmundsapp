@@ -1,4 +1,4 @@
-app.controller("RegisterCtrl", function($location, $rootScope, $scope, $http){
+app.controller("RegisterCtrl", function($location, $rootScope, $scope, $http, $window){
     $scope.register = function(user)
     {
         console.log(user);
@@ -9,9 +9,12 @@ app.controller("RegisterCtrl", function($location, $rootScope, $scope, $http){
 	        $http.post('/register', user)
 	        .success(function(response){
 	        	$rootScope.currentUser = user;
+                $window.alert("Successfully registered! Redirecting to your new profile page...");
                 $location.url("/profile");
 	        	console.log(response);
 	        });
-    	}
+    	} else {
+            $window.alert("Passwords do not match, please try again");
+        }
     };
 });

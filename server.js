@@ -77,7 +77,9 @@ var UserSchema = new mongoose.Schema({
 	firstName: String,
 	lastName: String,
 	roles: [String]
+	favoritedCars: [Number]
 });
+
 
 /*var CarSchema = new mongoose.Schema({
 	id: String,

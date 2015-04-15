@@ -1,0 +1,23 @@
+
+#search-title {
+	text-align: center;
+	margin-top: 25px;
+}
+
+#search-display-container {
+	margin-top:20px;
+	margin-bottom:20px;
+}
+
+#vehicle-list-table {
+	margin-top:30px;
+}
+
+.search-label {
+	font-size: 20px;
+	margin-top: 7px;
+}
+
+.model-name {
+	font-size: 30px;
+}

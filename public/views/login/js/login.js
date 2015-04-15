@@ -1,4 +1,4 @@
-app.controller("LoginCtrl", function($location, $rootScope, $scope, $http){
+app.controller("LoginCtrl", function($location, $rootScope, $scope, $http, $window){
     $scope.login = function(user)
     {
         console.log(user);
@@ -9,6 +9,9 @@ app.controller("LoginCtrl", function($location, $rootScope, $scope, $http){
         	$rootScope.currentUser = user;
         	console.log(response);
         	$location.url("/profile");
+        })
+        .error(function(data, status, headers, config) {
+            $window.alert("Error logging in: " + data + " " + status );
         });
 
     };

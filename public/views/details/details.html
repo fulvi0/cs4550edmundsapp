@@ -2,10 +2,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>Details</title>
+        <link rel="stylesheet" href="views/details/css/details.css"></a>
     </head>
     
     <body>
-        <h1>Details</h1>
+
+        <div class="col-lg-12" id="details-body">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10 well bs-component">
+            	<div class="col-lg-12">
+	            	<div class="col-lg-6">
+	            		{{detailsVehicleInfo.make.name}} {{detailsVehicleInfo.model.name}}
+	            	</div>
+	            	<div class="col-lg-6">
+	            		Starting from ${{detailsVehicleInfo.price.baseMSRP}}
+	            	</div>
+	            </div>
+
+	            <div class="col-lg-12">
+	            	<div class="col-lg-6">
+	            		{{detailsVehicleInfo.make.name}} {{detailsVehicleInfo.model.name}}
+	            	</div>
+	            	<div class="col-lg-6">
+	            		Starting from ${{detailsVehicleInfo.price.baseMSRP}}
+	            	</div>
+	            </div>
+            </div>
+            <div class="col-lg-1"></div>
+        </div>
 
         <div> {{detailsVehicleInfo}}</div>
     </body>
