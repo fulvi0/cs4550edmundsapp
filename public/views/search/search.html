@@ -62,7 +62,30 @@
 	                    </td>
 	                </tr>
 	                <tr>
-	                	<td><div id="{{model.niceName}}" class="collapse">Hidden by default</div></td>
+	                	<td>
+	                		<div id="{{model.niceName}}" class="collapse">
+	                			<table class="table">
+	                				<thead>
+	                					<tr>
+	                						<td>Model</td>
+	                						<td>Horsepower</td>
+											<td>Torque</td>
+	                						<td>MPG</td>
+	                					</tr>
+	                				</thead>
+	                				<!-- we restrict search to a single year so year[0] is always what we need to access -->
+	                				<tbody ng-repeat="vehicle in model.years[0].styles">
+	                					<tr>
+	                						<td>{{vehicle.name}}</td>
+	                						<td>row2</td>
+											<td>row3</td>
+	                						<td>row4</td>
+	                					</tr>
+	                				<tbody>
+	                			</table>
+	                		</div>
+
+	                	</td>
 	                </tr>
 	            </tbody>
 	        </table>

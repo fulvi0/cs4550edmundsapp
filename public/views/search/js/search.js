@@ -5,8 +5,12 @@ app.controller("SearchCtrl", function($location, $rootScope, $scope, $http){
     $scope.currentYear = "2015";
     $scope.currentCategory = "";
 
+    yearJson = "year=" + $scope.currentYear + "&";
+
+    //models are a bit hard to get to,
+
     // retrieve list of cars to display
-    $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + $scope.currentYear + $scope.currentCategory + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
+    $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + yearJson + $scope.currentCategory + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
     //$http.jsonp("https://api.edmunds.com/api/vehicle/v2/bmw/models?state=new&year=2015&category=Sedan&view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
         .success(function (response) {
             $scope.models = response.models
