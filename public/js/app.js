@@ -5,7 +5,9 @@ app.config(function($routeProvider) {
 	$routeProvider
 		.when('/home', {
 			//if you see the above, display profile.
-			templateUrl: 'views/home.html',
+			templateUrl: 'views/home/home.html',
+			controller: 'HomeCtrl',
+			css: 'views/home/css/home.css'
 		})
 		.when('/login', {
 			templateUrl: 'views/login/login.html',
@@ -30,7 +32,7 @@ app.config(function($routeProvider) {
 		})
 		.when('/details', {
 			templateUrl: 'views/details/details.html',
-			controller: 'detailsCtrl',
+			controller: 'DetailsCtrl',
 			css: 'views/details/css/details.css'
 		})
 		.otherwise({
@@ -61,6 +63,7 @@ var checkLoggedin = function($q, $timeout, $http, $location, $rootScope){
 		}
 	});
 }
+
 
 app.controller("NavCtrl", function($rootScope, $scope, $http, $location){
 	$scope.logout = function()

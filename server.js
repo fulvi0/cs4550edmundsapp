@@ -70,23 +70,34 @@ app.get('/api/website/create/:name', function (req, res) {
 	});
 });
 
+// information for a user
 var UserSchema = new mongoose.Schema({
 	username: String,
 	password: String,
-	// list of edmunds vehicle IDs the user has favorited
-	favoritedCars: [Number]
 });
 
+// one to many: map a user to all vehicle IDs that they like
+var UserToCarFavorites = new mongoose.Schema({
+	username: String,
+	edmundsID: Number
+})
+
+// car info for database so we avoid making API calls for just the vehicle name
 var CarSchema = new mongoose.Schema({
-	vehicleId: Number,
-	userFavorites: [String]
+	edmundsID: Number,
+	vehicleName: String
 });
 
-// model for keeping track of user data
+// Vehicle Domain Object
+
+// model for maintaining user data
 var UserModel = mongoose.model("UserModel", UserSchema);
 
-// model for keeping track of favorited car data
+// model for maintainng car data
 var CarModel = mongoose.model("CarModel", CarSchema);
+
+// model for maintaining user favorites (one user -> many cars) 
+var UserToCarFavoritesModel = mongoose.model("UserToCarFavoritesModel", UserToCarFavorites)
 
 
 
@@ -95,7 +106,7 @@ var CarModel = mongoose.model("CarModel", CarSchema);
 
 //admin.save();
 //student.save();
-
+//var newUserToCarFavorite = new UserToCarFavoritesModel({username: , edmundsID: });
 ////var testCar = new CarModel({vehicleId: 200704634, userFavorites: []})
 //testCar.save();
 /*
@@ -150,36 +161,33 @@ app.get("/getCarContent/:vehicleId", function (req, res){
 
 // favorite a car, add car ID to user entry and username to car entry
 app.post("/favoriteCar/:username/:vehicleId", function(req, res){
-	// add edmunds car ID to user entry
-	UserModel.findOne({username : req.params.username}, function (err, user){
-		// only let user favorite car if they haven't favorited it already
-		if (user.favoritedCars.indexOf(req.params.vehicleId) == -1){
-			user.favoritedCars.push(req.params.vehicleId);
-			user.save();
 
-			//res.json(user);
-		}
-	});
+	var newUserToCarFavorite = new UserToCarFavoritesModel({username: req.params.username, edmundsID: req.params.vehicleId});
+	newUserToCarFavorite.save();
 
-	// add username to car entry
 	CarModel.findOne({vehicleId : req.params.vehicleId}, function(err, car){
-		// check whether this car has been added yet
-		if (car){
-			// only save user in car entry if they have not favorited before
-			if (car.userFavorites.indexOf(req.params.username) == -1)
-			{
-				car.userFavorites.push(req.params.username);
-				car.save();
-			}
-		} else {
-			var newCar = new CarModel({vehicleId: req.params.vehicleId, userFavorites: [req.params.username]});
+		// add the car object if we have not added it yet
+		if (!car){
+			var newCar = new CarModel({edmundsID: req.params.vehicleId, vehicleName: 'bla'});
 			newCar.save();
-		}
+		} 
 	});
 
-	//console.log("sending current user from favorites");
-	//console.log(currentUser);
 	res.send(200);
+});
+
+// for use on a user's profile page - retrieve what cars they like
+app.get("getCarsFavorited/:user", function(req, res){
+	UserToCarFavoriteModel.find({username: req.params.username}, function(err, entries){
+		console.log(entries);
+	});
+});
+
+// for use on the details page - retrieve users who like the current car
+app.get("getUsersWhoFavorited/:vehicleId", function(req, res){
+	UserToCarFavoriteModel.find({edmundsID: req.params.vehicleId}, function(err, entries){
+		console.log(entries);
+	});
 });
 
 // get processes running

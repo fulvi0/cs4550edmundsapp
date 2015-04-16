@@ -65,11 +65,7 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
         $http.post('/favoriteCar/' + username + '/' + vehicleID)
         .success(function(response){
             console.log($rootScope.currentUser); 
-
-            // modify local current user so we don't log current user out
-            $rootScope.currentUser.favoritedCars.push(vehicleID);
-
-            //$rootScope.currentUser = response;
+            
         });
     }
 });
