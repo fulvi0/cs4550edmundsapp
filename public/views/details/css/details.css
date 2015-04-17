@@ -1,3 +1,48 @@
+body {
+    background-image: url("drivingroad.jpg");
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
 #details-body {
 	margin-top:30px;
+}
+
+.vehicle-title {
+	font-size: 30px;
+}
+
+#msrp {
+	padding-bottom: 10px;
+}
+
+hr {
+	width: 100%; 
+	color: black; 
+	height: 1px; 
+	background-color:black; 
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+#specs-header {
+	font-size: 22px;
+	margin-bottom: 10px;
+}
+
+#user-likes-container {
+	margin-bottom: 10px;
+}
+
+#comments-header {
+	font-size: 20px;
+}
+
+#submit-comment-button {
+	margin-top: 10px;
+}
+
+#register-message {
+	text-align: center;
 }

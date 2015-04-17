@@ -11,12 +11,22 @@
             <div class="col-lg-3"></div>
             <div class="col-lg-6 well bs-component">
                 <h1 id="register-title">Register</h1>
+                
                 <label class="control-label" for="inputDefault">Username:</label>
                 <input ng-model="user.username" type="text" class="form-control" id="inputDefault"/><br/>
+                
                 <label class="control-label" for="inputDefault">Password:</label>
                 <input ng-model="user.password" type="password" class="form-control" id="inputDefault"/><br/>
+                
                 <label class="control-label" for="inputDefault">Confirm Password:</label>
                 <input ng-model="user.password2" type="password" class="form-control" id="inputDefault"/><br/>
+
+                <label class="control-label" for="inputDefault">Location</label>
+                <input ng-model="user.location" type="text" class="form-control" id="inputDefault"/><br/>
+
+                <label class="control-label" for="inputDefault">Tell us about yourself!</label>
+                <input ng-model="user.about" type="text" class="form-control" id="inputDefault"/><br/>
+                
                 <button ng-click="register(user)" class="btn btn-success">Register</button>
             </div>
             <div class="col-lg-3"></div>

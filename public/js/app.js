@@ -23,6 +23,11 @@ app.config(function($routeProvider) {
 				logincheck: checkLoggedin
 			}
 		})
+		.when('/publicProfile', {
+			templateUrl: 'views/publicProfile/publicProfile.html',
+			controller: 'PublicProfileCtrl',
+			css: 'views/publicProfile/css/PublicProfile.css'
+		})
 		.when('/register', {
 			templateUrl: 'views/register/register.html',
 			controller: 'RegisterCtrl',

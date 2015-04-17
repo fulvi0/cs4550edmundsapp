@@ -104,4 +104,6 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
             $scope.currentUserFavorites = response;
         });
     }
+
+
 });

@@ -47,33 +47,18 @@ passport.deserializeUser(function(user, done){
 });
 
 
-
 /*
  * DATABASE CONNECTION / SCHEMA
  */
 var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || 'mongodb://localhost/db';
 var db = mongoose.connect(connectionString); 
 
-
-var WebSiteSchema = new mongoose.Schema({
-	name: String,
-	created: {type: Date, default: Date.now}
-}, {collection: 'website'});
-
-var WebSiteModel = mongoose.model('WebSite', WebSiteSchema);
-
-// adds a new website to the database (shows user response doc)
-app.get('/api/website/create/:name', function (req, res) {
-	var website = new WebSiteModel({name: req.params.name });
-	website.save(function (err, doc) {
-		res.json(doc);
-	});
-});
-
 // information for a user
 var UserSchema = new mongoose.Schema({
 	username: String,
 	password: String,
+	location: String,
+	about: String
 });
 
 // car info for database so we avoid making API calls for just the vehicle name
@@ -88,7 +73,22 @@ var UserToCarFavoritesSchema = new mongoose.Schema({
 	edmundsID: Number
 });
 
-// Vehicle Domain Object
+/*// schema for comments on car detail pages
+var CarCommentSchema = new mongoose.Schema({
+	edmundsID: Number,
+	vehicleName: String,
+	username: String,
+	comment: String,
+	date: { type: Date, default: Date.now }
+
+});
+
+// schema for comments on users profiles
+var UserCommentSchema = new mongoose.Schema({
+	commentingUsername: String,
+
+
+});*/
 
 // model for maintaining user data
 var UserModel = mongoose.model("UserModel", UserSchema);
@@ -99,19 +99,10 @@ var CarModel = mongoose.model("CarModel", CarSchema);
 var UserToCarFavoritesModel = mongoose.model("UserToCarFavoritesModel", UserToCarFavoritesSchema);
 
 
-//var admin = new UserModel({username: "alice", password: "alice", firstName: "Alice", lastName: "Wonderlane", roles:["admin"]});
-//var student = new UserModel({username: "bobmarley", password: "marley", firstName: "Bob", lastName: "Marley", roles:["student"]});
-
-//admin.save();
-//student.save();
-//var newUserToCarFavorite = new UserToCarFavoritesModel({username: , edmundsID: });
-////var testCar = new CarModel({vehicleId: 200704634, userFavorites: []})
-//testCar.save();
 /*
  * API DEFINITIONS
  */
 
-// login / logout functionality
 app.post("/login", passport.authenticate('local'), function(req, res){
 	res.json(req.user);
 });
@@ -150,6 +141,13 @@ app.post("/register", function (req, res){
 	console.log(newUser);
 });
 
+// retrieve a user based on username
+app.get("/getUser/:username", function (req, res){
+	UserModel.findOne({username: req.params.username}, function(err, user){
+		res.json(user);
+	});
+});
+
 // retrieve user content for a given Edmunds vehicle ID
 app.get("/getCarContent/:vehicleId", function (req, res){
 	CarModel.findOne({vehicleId : req.params.vehicleId}, function(err, car){
@@ -185,7 +183,7 @@ app.post("/deleteFavoriteCar/:username/:vehicleId", function(req, res){
 	res.send(200);
 });
 
-// retrieve the cars objects that a user likes
+// retrieve the car objects that a user likes
 app.get("/getUsersFavorites/:username", function(req, res){
 	var result;
 
@@ -206,6 +204,7 @@ app.get("/getUsersFavorites/:username", function(req, res){
 	});
 });
 
+// retrieve the IDs of the cars the current user has liked
 app.get("/getUsersFavoritesIDs/:username", function(req, res){
 	var result;
 
@@ -223,28 +222,39 @@ app.get("/getUsersFavoritesIDs/:username", function(req, res){
 	});
 });
 
-/*
-	// information for a user
-	var UserSchema = new mongoose.Schema({
-		username: String,
-		password: String,
-		// one to many: cars this user has liked
-		favoritedEdmundsIDs: [Number]
+// get the users that have favorited a given car
+app.get("/getCarFavorites/:vehicleId", function (req, res){
+	UserToCarFavoritesModel.find({edmundsID: req.params.vehicleId}, function(err, relations)
+	{
+		// get a list of users who like the given car
+		UserModel.find({username: {$in: relations.map(function(item){ return item.favoritedUsername})}}, function(err, users){
+			console.log(err);
+			console.log("users found for car are");
+			console.log(users);
+
+			// return all matches
+			res.json(users);
+		});
 	});
+});
 
-	// car info for database so we avoid making API calls for just the vehicle name
-	var CarSchema = new mongoose.Schema({
-		edmundsID: Number,
-		vehicleName: String,
-		// one to many: users who have liked this vehicle
-		favoritedUsers: [String]
-	});
+/*)
+// information for a user
+var UserSchema = new mongoose.Schema({
+	username: String,
+	password: String,
+});
 
+// car info for database so we avoid making API calls for just the vehicle name
+var CarSchema = new mongoose.Schema({
+	edmundsID: Number,
+	vehicleName: String,
+	modelYear: Number
+});
 
-	var UserToCarFavoritesSchema = new mongoose.Schema({
+var UserToCarFavoritesSchema = new mongoose.Schema({
 	favoritedUsername: String,
 	edmundsID: Number
-
 });
 */
 
@@ -257,61 +267,3 @@ app.get('/process', function(req, res) {
 var ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 var port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
 app.listen(port, ip);
-
-
-
-
-// API calls from class, just for reference....
-// retrieve websites by ID
-app.get('/api/website/:id', function (req, res) {
-	WebSiteModel.findById(req.params.id, function (err, sites) {
-		res.json(sites);
-	});
-});
-
-// retrieve all websites, show them all to user
-app.get('/api/website', function (req, res) {
-	WebSiteModel.find(function (err, sites) {
-		res.json(sites);
-	});
-});
-
-/*
-var courseArray =
- [{ name: "Java 101", category: "PROG", dateCreated: "1/1/2015", description: "Wow" },
-  { name: "MongoDB 101", category: "DB", dateCreated: "2/1/2015", description: "Good" },
-  { name: "Express 101", category: "PROG", dateCreated: "3/1/2015", description: "Better" },
-  { name: "AngularJS 101", category: "WEB", dateCreated: "4/1/2015", description: "Best" },
-  { name: "NodeJS 101", category: "PROG", dateCreated: "5/1/2015", description: "Awesome" }
-];
-// Old API endpoints to serve as example
-// return all courses
-app.get('/api/course', function(req, res) {
-	res.json(courseArray);
-});
-
-// return course at given index
-app.get('/api/course/:index', function(req, res) {
-	res.json(courseArray[req.params.index]);
-});
-
-// add new course to list of courses
-app.post('/api/course', function (req, res) {
-	var newCourse = req.body;
-	courseArray.push(newCourse);
-	res.json(courseArray);
-});
-
-// delete course at given index
-app.delete('/api/course/:index', function(req, res) {
-	courseArray.splice(req.params.index, 1);
-	res.json(courseArray)
-});
-
-// update course at given index
-app.put('/api/course/:index', function (req, res) {
-	var editedCourse = req.body;
-	courseArray[req.params.index] = editedCourse;
-	res.json(courseArray);
-});
-*/
