@@ -4,6 +4,17 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
     $scope.currentMake = "bmw";
     $scope.currentYear = "2015";
     $scope.currentCategory = "";
+    $scope.currentUserFavorites = [];
+
+    // if a user is logged in, retrieve a list of their favorite cars
+    if ($rootScope.currentUser)
+    {
+        console.log("current user in search is " + $rootScope.currentUser);
+        $http.get('/getUsersFavoritesIDs/' + $rootScope.currentUser.username)
+        .success(function(response){
+            $scope.currentUserFavorites = response;
+        });
+    }
 
     yearJson = "year=" + $scope.currentYear + "&";
 
@@ -18,11 +29,16 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
 
     //retrieve list of makes to filter from
     $http.jsonp("https://api.edmunds.com/api/vehicle/v2/makes?view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
-            .success(function (response) {
+        .success(function (response) {
             $scope.makes = response.makes
             console.log("list of makes is");
             console.log(response.makes);
         });
+
+    /*$http.get('/getUsersFavorites/' + username)
+        .success(function(response){
+            $scope.currentUserFavorites = response;
+        });*/
 
     // refresh the table of cars
     $scope.updateSearchResults = function()
@@ -31,7 +47,6 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
         console.log($scope.currentMake);
         console.log("current year is: ")
         console.log($scope.currentYear);
-
 
         yearJson = "year=" + $scope.currentYear + "&";
 
@@ -61,11 +76,38 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
 
     $scope.favoriteCar = function(username, vehicleID)
     {
-        console.log("username" + username + " " + "vehicleID " + vehicleID);
+        console.log("favoriting car: username" + username + " " + "vehicleID " + vehicleID);
         $http.post('/favoriteCar/' + username + '/' + vehicleID)
         .success(function(response){
-            console.log($rootScope.currentUser); 
-            
+            $scope.currentUserFavorites.push(vehicleID);
+        });
+    }
+
+    $scope.unFavoriteCar = function(username, vehicleID)
+    {
+        console.log("deleting car: username" + username + " " + "vehicleID " + vehicleID);
+        $http.post('/deleteFavoriteCar/' + username + '/' + vehicleID)
+        .success(function(response){
+            var index = $scope.currentUserFavorites.indexOf(vehicleID);
+            $scope.currentUserFavorites.splice(index, 1);
+        });
+    }
+
+    // return car objects that represent the users favorites
+    $scope.getUsersFavorites = function(username)
+    {
+        $http.get('/getUsersFavorites/' + username)
+        .success(function(response){
+            //$scope.currentUserFavorites = response;
+        });
+    }
+
+    // return a list of IDs that represent the users favorites
+    $scope.getUsersFavoritesIDs = function(username)
+    {
+        $http.get('/getUsersFavoritesIDs/' + username)
+        .sucess(function(response){
+            $scope.currentUserFavorites = response;
         });
     }
 });

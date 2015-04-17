@@ -76,16 +76,16 @@ var UserSchema = new mongoose.Schema({
 	password: String,
 });
 
-// one to many: map a user to all vehicle IDs that they like
-var UserToCarFavorites = new mongoose.Schema({
-	username: String,
-	edmundsID: Number
-})
-
 // car info for database so we avoid making API calls for just the vehicle name
 var CarSchema = new mongoose.Schema({
 	edmundsID: Number,
-	vehicleName: String
+	vehicleName: String,
+	modelYear: Number
+});
+
+var UserToCarFavoritesSchema = new mongoose.Schema({
+	favoritedUsername: String,
+	edmundsID: Number
 });
 
 // Vehicle Domain Object
@@ -96,9 +96,7 @@ var UserModel = mongoose.model("UserModel", UserSchema);
 // model for maintainng car data
 var CarModel = mongoose.model("CarModel", CarSchema);
 
-// model for maintaining user favorites (one user -> many cars) 
-var UserToCarFavoritesModel = mongoose.model("UserToCarFavoritesModel", UserToCarFavorites)
-
+var UserToCarFavoritesModel = mongoose.model("UserToCarFavoritesModel", UserToCarFavoritesSchema);
 
 
 //var admin = new UserModel({username: "alice", password: "alice", firstName: "Alice", lastName: "Wonderlane", roles:["admin"]});
@@ -161,34 +159,94 @@ app.get("/getCarContent/:vehicleId", function (req, res){
 
 // favorite a car, add car ID to user entry and username to car entry
 app.post("/favoriteCar/:username/:vehicleId", function(req, res){
-
-	var newUserToCarFavorite = new UserToCarFavoritesModel({username: req.params.username, edmundsID: req.params.vehicleId});
+	var newUserToCarFavorite = new UserToCarFavoritesModel({favoritedUsername: req.params.username, edmundsID: req.params.vehicleId});
 	newUserToCarFavorite.save();
 
-	CarModel.findOne({vehicleId : req.params.vehicleId}, function(err, car){
-		// add the car object if we have not added it yet
-		if (!car){
-			var newCar = new CarModel({edmundsID: req.params.vehicleId, vehicleName: 'bla'});
+	// if we don't have this car in our local database yet, add it
+	CarModel.findOne({edmundsID : req.params.vehicleId}, function(err, car){
+		if (!car)
+		{
+			var newCar = new CarModel({edmundsID: req.params.vehicleId, vehicleName: 'bla', modelYear: 1992});
 			newCar.save();
-		} 
+		}
 	});
 
 	res.send(200);
 });
 
-// for use on a user's profile page - retrieve what cars they like
-app.get("getCarsFavorited/:user", function(req, res){
-	UserToCarFavoriteModel.find({username: req.params.username}, function(err, entries){
-		console.log(entries);
+// unfavorite a car, remove relationship between user and vehicle
+app.post("/deleteFavoriteCar/:username/:vehicleId", function(req, res){
+	console.log("trying to remove edmundsID " + req.params.vehicleId + " attached to user " + req.params.username);
+	UserToCarFavoritesModel.remove( {$and: [{favoritedUsername: req.params.username}, {edmundsID: req.params.vehicleId}]}, function(err,removed)
+		{
+			console.log("within remove error: " + err);
+			console.log("within remove removed: " + removed);
+		});
+	res.send(200);
+});
+
+// retrieve the cars objects that a user likes
+app.get("/getUsersFavorites/:username", function(req, res){
+	var result;
+
+	// find the relational entries
+	UserToCarFavoritesModel.find({favoritedUsername: req.params.username}, function(err, relations)
+	{
+		console.log("Got array of cars user likes");
+
+		// get a list of IDs of all cars the user likes from the relations, and find all entries in car model that match the IDs
+		CarModel.find({edmundsID: {$in: relations.map(function(item){ return item.edmundsID})}}, function(err, cars){
+			console.log(err);
+			console.log("cars found are ");
+			console.log(cars);
+
+			// return all matches
+			res.json(cars);
+		});
 	});
 });
 
-// for use on the details page - retrieve users who like the current car
-app.get("getUsersWhoFavorited/:vehicleId", function(req, res){
-	UserToCarFavoriteModel.find({edmundsID: req.params.vehicleId}, function(err, entries){
-		console.log(entries);
+app.get("/getUsersFavoritesIDs/:username", function(req, res){
+	var result;
+
+	// find the relational entries
+	UserToCarFavoritesModel.find({favoritedUsername: req.params.username}, function(err, relations)
+	{
+		console.log("Got array of cars user likes");
+
+		// get a list of IDs of all cars the user likes from the relations, and find all entries in car model that match the IDs
+
+		result = relations.map(function(item){return item.edmundsID});
+		console.log("getUsersFavoritesIDs " + result);
+
+		res.json(result);
 	});
 });
+
+/*
+	// information for a user
+	var UserSchema = new mongoose.Schema({
+		username: String,
+		password: String,
+		// one to many: cars this user has liked
+		favoritedEdmundsIDs: [Number]
+	});
+
+	// car info for database so we avoid making API calls for just the vehicle name
+	var CarSchema = new mongoose.Schema({
+		edmundsID: Number,
+		vehicleName: String,
+		// one to many: users who have liked this vehicle
+		favoritedUsers: [String]
+	});
+
+
+	var UserToCarFavoritesSchema = new mongoose.Schema({
+	favoritedUsername: String,
+	edmundsID: Number
+
+});
+*/
 
 // get processes running
 app.get('/process', function(req, res) {
