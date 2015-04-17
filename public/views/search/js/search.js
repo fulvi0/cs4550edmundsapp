@@ -12,6 +12,7 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
         console.log("current user in search is " + $rootScope.currentUser);
         $http.get('/getUsersFavoritesIDs/' + $rootScope.currentUser.username)
         .success(function(response){
+            console.log("setting current user favorites to " + response);
             $scope.currentUserFavorites = response;
         });
     }
@@ -34,11 +35,6 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
             console.log("list of makes is");
             console.log(response.makes);
         });
-
-    /*$http.get('/getUsersFavorites/' + username)
-        .success(function(response){
-            $scope.currentUserFavorites = response;
-        });*/
 
     // refresh the table of cars
     $scope.updateSearchResults = function()
@@ -67,8 +63,6 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
 
     $scope.goToDetailsPage = function(vehicleID)
     {
-        console.log("Navigating to details page for vehicle " + vehicleID);
-
         // set rootScope to contain vehicle ID we will view
         $rootScope.currentDetailID = vehicleID;
         $location.url("/details");

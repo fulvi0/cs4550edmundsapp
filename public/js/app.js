@@ -15,7 +15,10 @@ app.config(function($routeProvider) {
 			css: 'views/login/css/login.css'
 		})
 		.when('/profile', {
-			templateUrl: 'views/profile.html',
+			templateUrl: 'views/profile/profile.html',
+			controller: 'ProfileCtrl',
+			css: 'views/profile/css/profile.css',
+			
 			resolve: {
 				logincheck: checkLoggedin
 			}
