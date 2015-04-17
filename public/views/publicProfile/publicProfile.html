@@ -1,12 +1,129 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>PROFILE</title>
+        <title>{{publicUser.username}}'s Profile</title>
         <link rel="stylesheet" href="views/publicProfile/css/publicProfile.css"></a>
     </head>
     
     <body>
         <h1>PROFILE</h1>
-        {{publicUser}}
+        public user: {{publicUser}}
+        public user favorites: {{publicUserFavorites}}
+        followers: {{publicUserFollowers}}
+        following: {{publicUserFollowings}}
+        <div class="col-lg-12" id="profile-body">
+
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8 well bs-component">
+            	
+            	<!-- vehicle name and and price / favorite button -->
+            	<div class="col-lg-12">
+            		<div class="col-lg-9" id="username-header">
+            		{{publicUser.username}}'s Profile
+            		</div>
+            		<div class="col-lg-3">
+						<button ng-if="currentUser && !listContainsUser(publicUserFollowers, currentUser.username)"
+								ng-click="followUser(currentUser.username, publicUser.username)" class="btn btn-info ">
+						Follow
+						</button>
+						<button ng-if="currentUser && listContainsUser(publicUserFollowers, currentUser.username)"
+								ng-click="unfollowUser(currentUser.username, publicUser.username)" class="btn btn-info ">
+							Unfollow
+						</button>
+					</div>
+
+	            </div>
+	            <div class="col-lg-12">
+	            	<div class="col-lg-12" id="location">
+	            		Location: {{publicUser.location}}
+	            	</div>
+	            </div>
+	            
+	            <hr/>
+	           	
+	           	<!-- car specifications -->
+	           	<div class="col-lg-12">
+	            	<div class="col-lg-12" id="-header">
+	            		About Me: {{publicUser.about}}
+	            	</div>
+	            </div>
+	            
+	            <hr/>
+
+	            <!-- user likes -->
+	            <div class="col-lg-12" id="user-likes-container">
+	            	<div class="col-lg-12">
+	            		Vehicles that {{publicUser.username}} likes:
+		            	<span ng-if="publicUserFavorites" ng-model="publicUserFavorites" ng-repeat="car in publicUserFavorites">
+		            		<div class="col-lg-12">
+		            			<a ng-click="goToDetailsPage(car.edmundsID)">{{car.vehicleName}}</a>
+		            		</div>
+		            	</span>
+						<span ng-if="!publicUserFavorites.length">
+							None yet!
+		            	</span>
+		            </div>
+	            </div>
+
+	             <hr/>
+
+
+	            <!-- following -->
+	            <div class="col-lg-12" id="user-likes-container">
+	            	<div class="col-lg-12">
+	            		Following:
+		            	<span ng-if="publicUserFollowings" ng-model="publicUserFollowings" ng-repeat="user in publicUserFollowings">
+		            		<a ng-click="routeToProfilePage(user.username)">{{user.username}}</a>
+		            	</span>
+						<span ng-if="!publicUserFollowings.length">
+							None yet!
+		            	</span>
+		            </div>
+	            </div>
+
+	            <hr/>
+
+	            <!-- followers -->
+	            <div class="col-lg-12" id="user-likes-container">
+	            	<div class="col-lg-12">
+	            		Followers:
+		            	<span ng-if="publicUserFollowers" ng-model="publicUserFollowers" ng-repeat="user in publicUserFollowers">
+		            		<a ng-click="routeToProfilePage(user.username)">{{user.username}}</a>
+		            	</span>
+						<span ng-if="!publicUserFollowers.length">
+							None yet!
+		            	</span>
+		            </div>
+	            </div>
+
+	            <hr/>
+	           	
+	           	<!-- user comments -->
+	           	<div class="col-lg-12">
+	            	<div class="col-lg-12" id="comments-header">
+	            		Comments
+	            	</div>
+	            	
+	            	<!-- TODO: comment stuff... :( -->
+	            	<div class="user-comments">
+	            	</div>
+
+	            	<div id="user-comment-area">
+		            	<div ng-if="currentUser">
+			            	<textarea class="form-control" rows="3" id="textArea"></textarea>
+			            	<button ng-click="" class="btn btn-info pull-left" id="submit-comment-button">
+									Post to {{publicUser.username}}'s Profile
+							</button>
+						</div>
+						<div ng-if="!currentUser" id="register-message">
+							<a href="#login">Login</a> or <a href="#register">register</a> to follow and comment on {{publicUser.username}}'s profile!
+						</div>
+					</div>
+
+	            </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
     </body>
 </html>

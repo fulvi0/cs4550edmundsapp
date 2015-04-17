@@ -1,12 +1,119 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>PROFILE</title>
+        <title>{{currentUser.username}}'s Profile</title>
         <link rel="stylesheet" href="views/profile/css/profile.css"></a>
     </head>
     
     <body>
         <h1>PROFILE</h1>
-        {{currentUser}}
+        current user: {{currentUser}}
+        current public user: {{publicUser}}
+        favorites: {{currentUserFavorites}}
+        followers: {{currentUserFollowers}}
+        following: {{currentUserFollowings}}
+        <div class="col-lg-12" id="profile-body">
+
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8 well bs-component">
+            	
+            	<!-- vehicle name and and price / favorite button -->
+            	<div class="col-lg-12">
+            		<div class="col-lg-12" id="username-header">
+            		{{currentUser.username}}'s Profile
+            		</div>
+	            </div>
+	            <div class="col-lg-12">
+	            	<div class="col-lg-12" id="location">
+	            		Location: {{currentUser.location}}
+	            	</div>
+	            </div>
+	            
+	            <hr/>
+	           	
+	           	<!-- car specifications -->
+	           	<div class="col-lg-12">
+	            	<div class="col-lg-12" id="-header">
+	            		About Me: {{currentUser.about}}
+	            	</div>
+	            </div>
+	            
+	            <hr/>
+
+	            <!-- user likes -->
+	            <div class="col-lg-12" id="user-likes-container">
+	            	<div class="col-lg-12">
+	            		Vehicles that {{currentUser.username}} likes:
+		            	<span ng-if="currentUserFavorites" ng-model="currentUserFavorites" ng-repeat="car in currentUserFavorites">
+		            		<div class="col-lg-12">
+		            			<a ng-click="goToDetailsPage(car.edmundsID)">{{car.vehicleName}}</a>
+		            		</div>
+		            	</span>
+						<span ng-if="!currentUserFavorites.length">
+							None yet!
+		            	</span>
+		            </div>
+	            </div>
+
+	             <hr/>
+
+
+	            <!-- following -->
+	            <div class="col-lg-12" id="user-likes-container">
+	            	<div class="col-lg-12">
+	            		Following:
+		            	<span ng-if="currentUserFollowings" ng-model="currentUserFollowings" ng-repeat="user in currentUserFollowings">
+		            		<a ng-click="routeToProfilePage(user.username)">{{user.username}}</a>
+		            	</span>
+						<span ng-if="!currentUserFollowings.length">
+							None yet!
+		            	</span>
+		            </div>
+	            </div>
+
+	            <hr/>
+
+	            <!-- followers -->
+	            <div class="col-lg-12" id="user-likes-container">
+	            	<div class="col-lg-12">
+	            		Followers:
+		            	<span ng-if="currentUserFollowers" ng-model="currentUserFollowers" ng-repeat="user in currentUserFollowers">
+		            		<a ng-click="routeToProfilePage(user.username)">{{user.username}}</a>
+		            	</span>
+						<span ng-if="!currentUserFollowers.length">
+							None yet!
+		            	</span>
+		            </div>
+	            </div>
+
+	            <hr/>
+	           	
+	           	<!-- user comments -->
+	           	<div class="col-lg-12">
+	            	<div class="col-lg-12" id="comments-header">
+	            		Comments
+	            	</div>
+	            	
+	            	<!-- TODO: comment stuff... :( -->
+	            	<div class="user-comments">
+	            	</div>
+
+	            	<div id="user-comment-area">
+		            	<div ng-if="currentUser">
+			            	<textarea class="form-control" rows="3" id="textArea"></textarea>
+			            	<button ng-click="" class="btn btn-info pull-left" id="submit-comment-button">
+									Post to {{currentUser.username}}'s Profile
+							</button>
+						</div>
+						<div ng-if="!currentUser" id="register-message">
+							<a href="#login">Login</a> or <a href="#register">register</a> to follow and comment on {{currentUser.username}}'s profile!
+						</div>
+					</div>
+
+	            </div>
+            </div>
+            <div class="col-lg-2"></div>
+        </div>
+
     </body>
 </html>

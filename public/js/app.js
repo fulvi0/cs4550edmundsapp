@@ -18,7 +18,6 @@ app.config(function($routeProvider) {
 			templateUrl: 'views/profile/profile.html',
 			controller: 'ProfileCtrl',
 			css: 'views/profile/css/profile.css',
-			
 			resolve: {
 				logincheck: checkLoggedin
 			}
@@ -46,11 +45,9 @@ app.config(function($routeProvider) {
 		.otherwise({
 			redirectTo: '/home'
 		})
-
 });
 
 var checkLoggedin = function($q, $timeout, $http, $location, $rootScope){
-
 	var deferred = $q.defer()
 
 	$http.get('loggedin').success(function(user)
@@ -72,7 +69,6 @@ var checkLoggedin = function($q, $timeout, $http, $location, $rootScope){
 	});
 }
 
-
 app.controller("NavCtrl", function($rootScope, $scope, $http, $location){
 	$scope.logout = function()
 	{
@@ -91,20 +87,3 @@ app.controller("NavCtrl", function($rootScope, $scope, $http, $location){
         });
     }
 });
-
-
-
-/*app.controller('LoginCtrl', function($scope, $http, $location, SecurityService)
-{
-	$scope.login = function(user)
-	{
-		console.log(user);
-		SecuritService.login(user, function(usuario)
-		{
-			console.log(usuario);
-			$location.url('/profile');
-		});
-	}
-});
-
-app.controller('NavCtrl',)*/

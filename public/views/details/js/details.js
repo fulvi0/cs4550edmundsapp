@@ -3,7 +3,6 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http){
 	$scope.currentUserFavorites = [];
 	$scope.usersWhoFavoritedCar = "";
 
-
 	if ($rootScope.currentUser)
     {
         console.log("current user in search is " + $rootScope.currentUser);
@@ -27,10 +26,10 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http){
     		$scope.usersWhoFavoritedCar = response;
    	});
 
-    $scope.favoriteCar = function(username, vehicleID)
+    $scope.favoriteCar = function(username, vehicleID, vehicleName, vehicleYear)
     {
         console.log("favoriting car: username" + username + " " + "vehicleID " + vehicleID);
-        $http.post('/favoriteCar/' + username + '/' + vehicleID)
+        $http.post('/favoriteCar/' + username + '/' + vehicleID + '/' + vehicleName + '/' + vehicleYear)
         .success(function(response){
             $scope.currentUserFavorites.push(vehicleID);
             $scope.usersWhoFavoritedCar.push($rootScope.currentUser);
@@ -78,6 +77,10 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http){
     // we want to reuse the user profile page, so we will set a rootScope variable to maintain the user to show in this case
     $scope.routeToProfilePage = function(username)
     {
+    	// spent an hour debugging a race condition because this was done in a callback and not set
+    	// in time for changing the new view
+    	$rootScope.publicUserUsername = username;
+
     	// go to profile page if logged in user is clicked on
     	if ($rootScope.currentUser && (username == $rootScope.currentUser.username)){
     		$location.url("/profile");

@@ -8,7 +8,8 @@
     <body ng-app="SearchCtrl">
     	<div class="container">
 	        <h1 id="search-title">Search Vehicles</h1>
-	        {{currentUserFavorites}}
+	        Current user favorite: {{currentUserFavorites}}
+	        Current make: {{currentMake}}
 	        <div class ="col-md-12 row" id="search-display-container">
 	        	<div class="search-label col-md-1">
 	        		Brand:
@@ -98,7 +99,7 @@
 											<td>row3</td>
 	                						<td>
 	                							<button ng-if="currentUser && currentUserFavorites.indexOf(vehicle.id) == -1"
-	                								    ng-click="favoriteCar(currentUser.username, vehicle.id)" class="btn btn-info pull-right">
+	                								    ng-click="favoriteCar(currentUser.username, vehicle.id, vehicle.name, model.years[0].year)" class="btn btn-info pull-right">
 	                								Favorite
 	                        					</button>
 	                        					<button ng-if="currentUser && currentUserFavorites.indexOf(vehicle.id) != -1"

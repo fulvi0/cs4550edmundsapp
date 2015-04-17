@@ -68,14 +68,15 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
         $location.url("/details");
     }
 
-    $scope.favoriteCar = function(username, vehicleID)
+    $scope.favoriteCar = function(username, vehicleID, vehicleName, vehicleYear)
     {
         console.log("favoriting car: username" + username + " " + "vehicleID " + vehicleID);
-        $http.post('/favoriteCar/' + username + '/' + vehicleID)
+        $http.post('/favoriteCar/' + username + '/' + vehicleID + '/' + vehicleName.replace(/\//g, '') + '/' + vehicleYear)
         .success(function(response){
             $scope.currentUserFavorites.push(vehicleID);
         });
     }
+
 
     $scope.unFavoriteCar = function(username, vehicleID)
     {

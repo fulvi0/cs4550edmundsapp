@@ -8,7 +8,9 @@
     <body>
     	    Current user favorites {{currentUserFavorites}} <br>
         	detailsVehicleinfo.id {{detailsVehicleInfo.id}} <br>
-        	usersWhoFavoritedCar  {{usersWhoFavoritedCar}}
+        	usersWhoFavoritedCar  {{usersWhoFavoritedCar}} <br>
+        	current public user {{publicUser}}
+        	current public user favorites: {{publicUserFavorites}}
         <div class="col-lg-12" id="details-body">
 
             <div class="col-lg-2"></div>
@@ -21,11 +23,11 @@
 	            	</div>
 	            	<div class="col-lg-3">
 						<button ng-if="currentUser && currentUserFavorites.indexOf(detailsVehicleInfo.id) == -1"
-								ng-click="favoriteCar(currentUser.username, detailsVehicleInfo.id)" class="btn btn-info pull-right">
+								ng-click="favoriteCar(currentUser.username, detailsVehicleInfo.id, detailsVehicleInfo.name, detailsVehicleInfo.year.year)" class="btn btn-info ">
 							Favorite
 						</button>
 						<button ng-if="currentUser && currentUserFavorites.indexOf(detailsVehicleInfo.id) != -1"
-								ng-click="unFavoriteCar(currentUser.username, detailsVehicleInfo.id)" class="btn btn-info pull-right">
+								ng-click="unFavoriteCar(currentUser.username, detailsVehicleInfo.id)" class="btn btn-info">
 							Unfavorite
 						</button>
 	            	</div>

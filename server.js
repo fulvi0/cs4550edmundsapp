@@ -73,6 +73,12 @@ var UserToCarFavoritesSchema = new mongoose.Schema({
 	edmundsID: Number
 });
 
+// represent a user following another user
+var UserToUserFollowSchema = new mongoose.Schema({
+	followerUsername: String,
+	followingUsername: String
+});
+
 /*// schema for comments on car detail pages
 var CarCommentSchema = new mongoose.Schema({
 	edmundsID: Number,
@@ -98,7 +104,7 @@ var CarModel = mongoose.model("CarModel", CarSchema);
 
 var UserToCarFavoritesModel = mongoose.model("UserToCarFavoritesModel", UserToCarFavoritesSchema);
 
-
+var UserToUserFollowModel = mongoose.model("UserToUserFollowModel", UserToUserFollowSchema);
 /*
  * API DEFINITIONS
  */
@@ -156,7 +162,7 @@ app.get("/getCarContent/:vehicleId", function (req, res){
 });
 
 // favorite a car, add car ID to user entry and username to car entry
-app.post("/favoriteCar/:username/:vehicleId", function(req, res){
+app.post("/favoriteCar/:username/:vehicleId/:vehicleName/:modelYear", function(req, res){
 	var newUserToCarFavorite = new UserToCarFavoritesModel({favoritedUsername: req.params.username, edmundsID: req.params.vehicleId});
 	newUserToCarFavorite.save();
 
@@ -164,7 +170,9 @@ app.post("/favoriteCar/:username/:vehicleId", function(req, res){
 	CarModel.findOne({edmundsID : req.params.vehicleId}, function(err, car){
 		if (!car)
 		{
-			var newCar = new CarModel({edmundsID: req.params.vehicleId, vehicleName: 'bla', modelYear: 1992});
+			// create new car to store in our database to maintain user interactions
+			console.log("adding car to favorites" + car)
+			var newCar = new CarModel({edmundsID: req.params.vehicleId, vehicleName: req.params.vehicleName, modelYear: req.params.modelYear});
 			newCar.save();
 		}
 	});
@@ -211,12 +219,8 @@ app.get("/getUsersFavoritesIDs/:username", function(req, res){
 	// find the relational entries
 	UserToCarFavoritesModel.find({favoritedUsername: req.params.username}, function(err, relations)
 	{
-		console.log("Got array of cars user likes");
-
 		// get a list of IDs of all cars the user likes from the relations, and find all entries in car model that match the IDs
-
 		result = relations.map(function(item){return item.edmundsID});
-		console.log("getUsersFavoritesIDs " + result);
 
 		res.json(result);
 	});
@@ -228,15 +232,65 @@ app.get("/getCarFavorites/:vehicleId", function (req, res){
 	{
 		// get a list of users who like the given car
 		UserModel.find({username: {$in: relations.map(function(item){ return item.favoritedUsername})}}, function(err, users){
-			console.log(err);
-			console.log("users found for car are");
-			console.log(users);
-
 			// return all matches
 			res.json(users);
 		});
 	});
 });
+
+// add user1 to user2's followers
+app.post("/follow/:username1/:username2", function(req, res){
+	var newFollow = new UserToUserFollowModel({followerUsername: req.params.username1, followingUsername: req.params.username2});
+	newFollow.save();
+
+	res.send(200);
+});
+
+// unfollow user1 from user2's followers
+app.post("/unfollow/:username1/:username2", function(req, res){
+	UserToUserFollowModel.remove({followerUsername : req.params.username1, followingUsername: req.params.username2}, function (err, response){
+
+	});
+
+	res.send(200);
+});
+
+
+// retrieve followers of given user
+app.get("/getFollowers/:username", function(req, res){
+	UserToUserFollowModel.find({followingUsername: req.params.username}, function (err, followers){
+		// get a list of users who like the given car
+		UserModel.find({username: {$in: followers.map(function(item){ return item.followerUsername})}}, function(err, users){
+			// return all user matches
+			res.json(users);
+		});
+
+		//res.json(followers);
+	});
+});
+
+// retrieve the users followed by a given user
+app.get("/getFollowing/:username", function(req, res){
+	UserToUserFollowModel.find({followerUsername: req.params.username}, function (err, following){
+		// get a list of users who like the given car
+		UserModel.find({username: {$in: following.map(function(item){ return item.followingUsername})}}, function(err, users){
+			// return all user matches
+			res.json(users);
+		});
+
+		//res.json(followers);
+	});
+});
+
+
+/*
+// represent a user following another user
+var UserToUserSchema = new mongoose.Schema({
+	followerUsername: String,
+	followingUsername: String
+});
+*/
+
 
 /*)
 // information for a user
