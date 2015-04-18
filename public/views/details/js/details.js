@@ -3,6 +3,12 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http, $wi
 	$scope.currentUserFavorites = [];
 	$scope.usersWhoFavoritedCar = "";
 
+
+	$http.get("/getVehicleComments/" + $rootScope.currentDetailID)
+    	.success(function(response){
+    		$scope.vehicleComments = response;
+    });
+
 	if ($rootScope.currentUser)
     {
         console.log("current user in search is " + $rootScope.currentUser);
@@ -99,10 +105,16 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http, $wi
     {
     	$http.post("/submitVehicleComment/" + username + '/' + vehicleId + '/' + comment)
     	.success(function(response){
-    		console.log("Added comment " + response);
-    		$scope.currentComment = "";
+    		$scope.getVehicleComments($rootScope.currentDetailID);
     	});
+    }
 
-    	res.send(200);
+    $scope.getVehicleComments = function(vehicleId)
+    {
+    	$http.get("/getVehicleComments/" + vehicleId)
+    	.success(function(response){
+    		$scope.vehicleComments = response;
+    		console.log("Retrieved comments " + response);
+    	});
     }
 });

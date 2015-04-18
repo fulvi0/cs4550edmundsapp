@@ -15,6 +15,11 @@ app.controller("ProfileCtrl", function($location, $rootScope, $scope, $http, $wi
         $scope.currentUserFollowings = response;
     });
 
+	$http.get("/getProfileComments/" + $rootScope.currentUser.username)
+		.success(function(response){
+		$scope.profileComments = response;
+	});
+
     $scope.goToDetailsPage = function(vehicleID)
     {
         // set rootScope to contain vehicle ID we will view
@@ -48,7 +53,17 @@ app.controller("ProfileCtrl", function($location, $rootScope, $scope, $http, $wi
     {
     	$http.post("/submitUserComment/" + username1 + '/' + username2 + '/' + comment)
     	.success(function(response){
+    		$scope.getProfileComments(username2);
     		console.log("Added comment " + response);
+    	});
+    }
+
+    $scope.getProfileComments = function(username)
+    {
+    	$http.get("/getProfileComments/" + username)
+    	.success(function(response){
+    		$scope.profileComments = response;
+    		console.log("Retrieved comments " + response);
     	});
     }
 });

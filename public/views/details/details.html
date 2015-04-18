@@ -91,7 +91,20 @@
 	            	<div class="col-lg-12" id="comments-header">
 	            		Comments
 	            	</div>
-	            	<div class="user-comments">
+
+		            <div class="user-comments col-lg-12">
+	            		<div ng-model="vehicleComments" ng-repeat="comment in vehicleComments">
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<div class="comment-info">
+										{{comment.commenterUsername}} on {{comment.date}}
+									</div>
+									<div class="comment-body">
+										{{comment.comment}}
+									</div>
+								</div>
+							</div>
+	            		</div>
 	            	</div>
 
 	            	<div id="user-comment-area">

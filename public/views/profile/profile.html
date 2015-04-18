@@ -14,6 +14,7 @@
             	<!-- vehicle name and and price / favorite button -->
             	<div class="col-lg-12">
             		<div class="col-lg-12" id="username-header">
+            			{{profileComments}}
             		{{currentUser.username}}'s Profile
             		</div>
 	            </div>
@@ -89,7 +90,20 @@
 	            	</div>
 	            	
 	            	<!-- TODO: comment stuff... :( -->
-	            	<div class="user-comments">
+	            	<div class="user-comments col-lg-12">
+	            		<div ng-model="profileComments" ng-repeat="comment in profileComments">
+
+							<div class="panel panel-default">
+								<div class="panel-body">
+									<div class="comment-info">
+										{{comment.commenterUsername}} on {{comment.date}}
+									</div>
+									<div class="comment-body">
+										{{comment.comment}}
+									</div>
+								</div>
+							</div>
+	            		</div>
 	            	</div>
 
 	            	<div id="user-comment-area">

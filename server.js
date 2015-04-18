@@ -82,7 +82,7 @@ var UserToUserFollowSchema = new mongoose.Schema({
 // represent a user's comment on a car
 var UserToCarCommentSchema = new mongoose.Schema({
 	username: String,
-	edmundsID: String,
+	edmundsID: Number,
 	comment: String,
 	date: { type: Date, default: Date.now }
 });
@@ -294,7 +294,7 @@ app.get("/getFollowing/:username", function(req, res){
 
 // add a comment
 app.post("/submitVehicleComment/:username/:vehicleId/:comment", function(req, res){
-	var newComment = new UserToCarCommentModel({username: req.params.username, emundsID: req.params.vehicleId, comment: req.params.comment});
+	var newComment = new UserToCarCommentModel({username: req.params.username, edmundsID: req.params.vehicleId, comment: req.params.comment});
 	newComment.save();
 
 	res.send(200);
@@ -306,6 +306,20 @@ app.post("/submitUserComment/:username1/:username2/:comment", function(req, res)
 	newComment.save();
 
 	res.send(200);
+});
+
+// retrieve all the comments on a given user's profile
+app.get("/getProfileComments/:username", function(req, res){
+	UserToUserCommentModel.find({username: req.params.username}, function (err, comments){
+		res.json(comments);
+	});
+});
+
+// retrieve all the comments on a given vehicle's detail page
+app.get("/getVehicleComments/:vehicleId", function(req, res){
+	UserToCarCommentModel.find({edmundsID: req.params.vehicleId}, function (err, comments){
+		res.json(comments);
+	});
 });
 
 /*

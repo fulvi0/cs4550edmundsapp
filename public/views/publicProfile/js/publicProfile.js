@@ -15,6 +15,11 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
         $scope.publicUserFollowings = response;
     });
 
+	$http.get("/getProfileComments/" + $rootScope.publicUserUsername)
+		.success(function(response){
+			$scope.profileComments = response;
+	});
+
     $scope.routeToProfilePage = function(username)
     {
     	// we are going from a public profile to a public profile so we need to refresh all of the information
@@ -22,6 +27,7 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
     	$scope.refreshUserFavorites(username);
     	$scope.getFollowers(username);
     	$scope.getFollowing(username);
+    	$scope.getProfileComments(username);
 
     	// go to profile page if logged in user is clicked on
     	if ($rootScope.currentUser && (username == $rootScope.currentUser.username)){
@@ -111,7 +117,18 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
     {
     	$http.post("/submitUserComment/" + username1 + '/' + username2 + '/' + comment)
     	.success(function(response){
+    		$scope.getProfileComments(username2);
     		console.log("Added comment " + response);
+    	});
+    }
+
+    $scope.getProfileComments = function(username)
+    {
+    	$http.get("/getProfileComments/" + username)
+    	.success(function(response){
+    		$scope.profileComments = response;
+    		//$scope.publicUserFollowings = response;
+    		console.log("Retrieved comments " + response);
     	});
     }
 
