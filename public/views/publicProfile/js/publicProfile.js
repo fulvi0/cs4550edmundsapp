@@ -1,35 +1,5 @@
 app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $http, $window){
-	
-	$http.get('/getUsersFavorites/' + $rootScope.publicUserUsername )
-    .success(function(response){
-        $scope.publicUserFavorites = response;
-    });
-
-   	$http.get('/getFollowers/' + $rootScope.publicUserUsername )
-    .success(function(response){
-        $scope.publicUserFollowers = response;
-    });
-
-    $http.get('/getFollowing/' + $rootScope.publicUserUsername )
-    .success(function(response){
-        $scope.publicUserFollowings = response;
-    });
-
-	$http.get("/getProfileComments/" + $rootScope.publicUserUsername)
-		.success(function(response){
-			$scope.profileComments = response;
-	});
-
-	$http.get("/getAllUserVehicleComments/" + $rootScope.publicUserUsername)
-		.success(function(response){
-			$scope.userCarComments = response;
-	})
-
-	$http.get("/getAllUserProfileComments/" + $rootScope.publicUserUsername)
-		.success(function(response){
-			$scope.userProfileComments = response;
-	})
-
+	// go to a public profile page, or your own profile page
     $scope.routeToProfilePage = function(username)
     {
     	// if we are going from a public profile to a public profile so we need to refresh all of the information
@@ -40,8 +10,6 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
     	$scope.getProfileComments(username);
     	$scope.getUserCarComments(username);
     	$scope.getUserProfileComments(username);
-
-
 
     	// go to profile page if logged in user is clicked on
     	if ($rootScope.currentUser && (username == $rootScope.currentUser.username)){
@@ -57,6 +25,7 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
     	}
     }
 
+    // change views to the detail page of the given car
     $scope.goToDetailsPage = function(vehicleID)
     {
         // set rootScope to contain vehicle ID we will view
@@ -68,6 +37,7 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
         $location.path(path);
     };
 
+    // refreshes the favorite cars of the user
 	$scope.refreshUserFavorites = function(username)
 	{
 		$http.get('/getUsersFavorites/' + $rootScope.publicUserUsername )
@@ -76,6 +46,7 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
 	    });
 	}
 
+	// username1 follows username2
 	$scope.followUser = function(username1, username2)
 	{
 		$http.post('/follow/' + username1 + '/' + username2)
@@ -85,6 +56,7 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
 		});
 	}
 
+	// username1 unfollows username2
 	$scope.unfollowUser = function(username1, username2)
 	{
 		$http.post('/unfollow/' + username1 + '/' + username2)
@@ -94,6 +66,8 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
 		});
 	}
 
+
+	// get users that follow the current user
 	$scope.getFollowers = function(username)
 	{
 	   	$http.get('/getFollowers/' + $rootScope.publicUserUsername )
@@ -102,6 +76,7 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
 	    });
 	}
 
+	// get users the given user is following
 	$scope.getFollowing = function(username)
 	{
 	    $http.get('/getFollowing/' + $rootScope.publicUserUsername )
@@ -110,6 +85,7 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
 	    });
 	}
 
+	// utility function to check if any objects in the list contain the user
 	$scope.listContainsUser= function(list, username)
 	{
 		var result = 0;
@@ -147,24 +123,6 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
     	});
     }
 
-    // retrieve all comments the current user has made on cars
-    $scope.getUserCarComments = function(username)
-    {
-    	$http.get("/getAllUserVehicleComments/" + username)
-    	.success(function(response){
-    		$scope.userCarComments = response;
-    	})
-    }
-
-    //
-    $scope.getUserProfileComments = function(username)
-    {
-    	$http.get("/getAllUserProfileComments/" + username)
-    	.success(function(response){
-    		$scope.userProfileComments = response;
-    	})
-    }
-
     $scope.getUserCarComments = function(username)
     {
     	$http.get("/getAllUserVehicleComments/" + username)
@@ -180,5 +138,23 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
     		$scope.userProfileComments = response;
     	})
     }
+
+    // refresh the favorites of the current user
+    $scope.refreshUserFavorites($rootScope.publicUserUsername)
+
+  	// get users that follow the current user
+	$scope.getFollowers($rootScope.publicUserUsername)
+
+	// get users the given user is following
+	$scope.getFollowing($rootScope.publicUserUsername)
+
+	// get comments for the current user's profile
+    $scope.getProfileComments($rootScope.publicUserUsername)
+
+    // get comments the current user has made on details pages
+    $scope.getUserCarComments($rootScope.publicUserUsername)
+
+    // get comments the current user has made on profile pages
+    $scope.getUserProfileComments($rootScope.publicUserUsername)
 
 });

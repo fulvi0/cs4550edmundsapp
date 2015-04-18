@@ -15,21 +15,7 @@ app.controller("ProfileCtrl", function($location, $rootScope, $scope, $http, $wi
         $scope.currentUserFollowings = response;
     });
 
-	$http.get("/getProfileComments/" + $rootScope.currentUser.username)
-		.success(function(response){
-		$scope.profileComments = response;
-	});
-
-	$http.get("/getAllUserVehicleComments/" + $rootScope.currentUser.username)
-		.success(function(response){
-		$scope.userCarComments = response;
-	})
-
-	$http.get("/getAllUserProfileComments/" + $rootScope.currentUser.username)
-		.success(function(response){
-		$scope.userProfileComments = response;
-	})
-
+    // go to the detail page of the given vehicle ID
     $scope.goToDetailsPage = function(vehicleID)
     {
         // set rootScope to contain vehicle ID we will view
@@ -92,4 +78,9 @@ app.controller("ProfileCtrl", function($location, $rootScope, $scope, $http, $wi
     		$scope.userProfileComments = response;
     	})
     }
+
+    $scope.getProfileComments($rootScope.currentUser.username);
+    $scope.getUserCarComments($rootScope.currentUser.username);
+    $scope.getUserProfileComments($rootScope.currentUser.username);
+
 });

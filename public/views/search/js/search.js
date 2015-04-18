@@ -17,18 +17,17 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
         });
     }
 
-    yearJson = "year=" + $scope.currentYear + "&";
-
     // retrieve list of cars to display
-    $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + yearJson + $scope.currentCategory + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
+    /*$http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + yearJson + $scope.currentCategory + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
     //$http.jsonp("https://api.edmunds.com/api/vehicle/v2/bmw/models?state=new&year=2015&category=Sedan&view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
         .success(function (response) {
             $scope.models = response.models
             console.log("object is ");
             console.log(response.models);
         });
+    */
 
-    //retrieve list of makes to filter from
+    //retrieve list of makes to filter from (this does not change so we will only do it once)
     $http.jsonp("https://api.edmunds.com/api/vehicle/v2/makes?view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
         .success(function (response) {
             $scope.makes = response.makes
@@ -53,6 +52,7 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
             categoryJson = "category=" + $scope.currentCategory + "&";
         }
 
+        // insert the make (required), year (required) and category (optional) to make API query
         $http.jsonp("https://api.edmunds.com/api/vehicle/v2/" + $scope.currentMake + "/models?" + yearJson + categoryJson + "view=basic&fmt=json&api_key=vwp9323cjna6pjxg5jqtc3qc&callback=JSON_CALLBACK")
         .success(function (response) {
             $scope.models = response.models
@@ -106,5 +106,6 @@ app.controller("SearchCtrl", function($q, $timeout, $location, $rootScope, $scop
         });
     }
 
-
+    // load search results upon page load
+    $scope.updateSearchResults();
 });

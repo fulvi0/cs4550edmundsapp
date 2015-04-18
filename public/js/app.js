@@ -4,7 +4,6 @@ var app = angular.module('PassportApp', ['ngRoute']);
 app.config(function($routeProvider) {
 	$routeProvider
 		.when('/home', {
-			//if you see the above, display profile.
 			templateUrl: 'views/home/home.html',
 			controller: 'HomeCtrl',
 			css: 'views/home/css/home.css'

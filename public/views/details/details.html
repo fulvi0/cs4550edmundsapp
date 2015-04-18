@@ -6,13 +6,7 @@
     </head>
     
     <body>
-    	    Current user favorites {{currentUserFavorites}} <br>
-        	detailsVehicleinfo.id {{detailsVehicleInfo.id}} <br>
-        	usersWhoFavoritedCar  {{usersWhoFavoritedCar}} <br>
-        	current public user {{publicUser}}
-        	current public user favorites: {{publicUserFavorites}}
         <div class="col-lg-12" id="details-body">
-        	{{currentComment}}
             <div class="col-lg-2"></div>
             <div class="col-lg-8 well bs-component">
             	<!-- vehicle name and and price / favorite button -->
@@ -97,7 +91,7 @@
 							<div class="panel panel-default">
 								<div class="panel-body">
 									<div class="comment-info">
-										{{comment.commenterUsername}} on {{comment.date}}
+										{{comment.username}} on {{comment.date}}
 									</div>
 									<div class="comment-body">
 										{{comment.comment}}

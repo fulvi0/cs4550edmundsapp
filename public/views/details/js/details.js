@@ -3,15 +3,9 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http, $wi
 	$scope.currentUserFavorites = [];
 	$scope.usersWhoFavoritedCar = "";
 
-
-	$http.get("/getVehicleComments/" + $rootScope.currentDetailID)
-    	.success(function(response){
-    		$scope.vehicleComments = response;
-    });
-
+	// if we are logged in, get the IDs of cars the user has favorited
 	if ($rootScope.currentUser)
     {
-        console.log("current user in search is " + $rootScope.currentUser);
         $http.get('/getUsersFavoritesIDs/' + $rootScope.currentUser.username)
         .success(function(response){
             console.log("setting current user favorites to " + response);
@@ -27,11 +21,13 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http, $wi
             console.log(response);
      });
 
+        
     $http.get("/getCarFavorites/" + $rootScope.currentDetailID)
     	.success(function (response) {
     		$scope.usersWhoFavoritedCar = response;
    	});
 
+   	// favorite the given car
     $scope.favoriteCar = function(username, vehicleID, vehicleName, vehicleYear)
     {
         console.log("favoriting car: username" + username + " " + "vehicleID " + vehicleID);
@@ -42,6 +38,7 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http, $wi
         });
     }
 
+    // unfavorite the given car from username's profile
     $scope.unFavoriteCar = function(username, vehicleID)
     {
         console.log("deleting car: username" + username + " " + "vehicleID " + vehicleID);
@@ -101,6 +98,7 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http, $wi
     	}
     }
 
+    // add a comment to the current vehicle
     $scope.submitVehicleComment = function(username, vehicleId, comment)
     {
     	$http.post("/submitVehicleComment/" + username + '/' + vehicleId + '/' + comment)
@@ -109,12 +107,14 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http, $wi
     	});
     }
 
+    // get comments on the current vehicle
     $scope.getVehicleComments = function(vehicleId)
     {
     	$http.get("/getVehicleComments/" + vehicleId)
     	.success(function(response){
     		$scope.vehicleComments = response;
-    		console.log("Retrieved comments " + response);
     	});
     }
+
+    $scope.getVehicleComments($rootScope.currentDetailID);
 });
