@@ -94,9 +94,10 @@
 
 	            	<div id="user-comment-area">
 		            	<div ng-if="currentUser">
-			            	<textarea class="form-control" rows="3" id="textArea"></textarea>
-			            	<button ng-click="" class="btn btn-info pull-left" id="submit-comment-button">
-									Post to {{currentUser.username}}'s Profile
+			            	<textarea ng-model="currentComment" class="form-control" rows="3" id="textArea"></textarea>
+			            	<button ng-click="submitUserComment(currentUser.username, currentUser.username, currentComment)"
+			            		    class="btn btn-info pull-left" id="submit-comment-button">
+									Post to your Profile
 							</button>
 						</div>
 						<div ng-if="!currentUser" id="register-message">

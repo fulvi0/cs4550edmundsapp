@@ -43,4 +43,12 @@ app.controller("ProfileCtrl", function($location, $rootScope, $scope, $http, $wi
         	$location.url("/publicProfile");
     	}
     }
+
+   	$scope.submitUserComment = function(username1, username2, comment)
+    {
+    	$http.post("/submitUserComment/" + username1 + '/' + username2 + '/' + comment)
+    	.success(function(response){
+    		console.log("Added comment " + response);
+    	});
+    }
 });

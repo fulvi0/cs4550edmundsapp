@@ -12,10 +12,9 @@
         	current public user {{publicUser}}
         	current public user favorites: {{publicUserFavorites}}
         <div class="col-lg-12" id="details-body">
-
+        	{{currentComment}}
             <div class="col-lg-2"></div>
             <div class="col-lg-8 well bs-component">
-            	
             	<!-- vehicle name and and price / favorite button -->
             	<div class="col-lg-12">
 	            	<div class="col-lg-9 vehicle-title">
@@ -97,8 +96,8 @@
 
 	            	<div id="user-comment-area">
 		            	<div ng-if="currentUser">
-			            	<textarea class="form-control" rows="3" id="textArea"></textarea>
-			            	<button ng-click="" class="btn btn-info pull-left" id="submit-comment-button">
+			            	<textarea ng-model="currentComment" class="form-control" rows="3" id="textArea"></textarea>
+			            	<button ng-click="submitVehicleComment(currentUser.username, detailsVehicleInfo.id, currentComment)" class="btn btn-info pull-left" id="submit-comment-button">
 									Submit Comment
 							</button>
 						</div>

@@ -1,4 +1,4 @@
-app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http){
+app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http, $window){
 
 	$scope.currentUserFavorites = [];
 	$scope.usersWhoFavoritedCar = "";
@@ -95,4 +95,14 @@ app.controller("DetailsCtrl", function($location, $rootScope, $scope, $http){
     	}
     }
 
+    $scope.submitVehicleComment = function(username, vehicleId, comment)
+    {
+    	$http.post("/submitVehicleComment/" + username + '/' + vehicleId + '/' + comment)
+    	.success(function(response){
+    		console.log("Added comment " + response);
+    		$scope.currentComment = "";
+    	});
+
+    	res.send(200);
+    }
 });

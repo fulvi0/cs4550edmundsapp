@@ -79,6 +79,22 @@ var UserToUserFollowSchema = new mongoose.Schema({
 	followingUsername: String
 });
 
+// represent a user's comment on a car
+var UserToCarCommentSchema = new mongoose.Schema({
+	username: String,
+	edmundsID: String,
+	comment: String,
+	date: { type: Date, default: Date.now }
+});
+
+// represent a user/s comment on a user's profile
+var UserToUserCommentSchema = new mongoose.Schema({
+	username: String,
+	commenterUsername: String,
+	comment: String,
+	date: { type: Date, default: Date.now }
+});
+
 /*// schema for comments on car detail pages
 var CarCommentSchema = new mongoose.Schema({
 	edmundsID: Number,
@@ -87,14 +103,8 @@ var CarCommentSchema = new mongoose.Schema({
 	comment: String,
 	date: { type: Date, default: Date.now }
 
-});
-
-// schema for comments on users profiles
-var UserCommentSchema = new mongoose.Schema({
-	commentingUsername: String,
-
-
 });*/
+
 
 // model for maintaining user data
 var UserModel = mongoose.model("UserModel", UserSchema);
@@ -105,6 +115,11 @@ var CarModel = mongoose.model("CarModel", CarSchema);
 var UserToCarFavoritesModel = mongoose.model("UserToCarFavoritesModel", UserToCarFavoritesSchema);
 
 var UserToUserFollowModel = mongoose.model("UserToUserFollowModel", UserToUserFollowSchema);
+
+var UserToCarCommentModel = mongoose.model("UserToCarCommentModel", UserToCarCommentSchema);
+
+var UserToUserCommentModel = mongoose.model("UserToUserCommentModel", UserToUserCommentSchema);
+
 /*
  * API DEFINITIONS
  */
@@ -143,6 +158,7 @@ app.post("/register", function (req, res){
 			});
 		}
 	});
+
 	var newUser = req.body;
 	console.log(newUser);
 });
@@ -184,10 +200,10 @@ app.post("/favoriteCar/:username/:vehicleId/:vehicleName/:modelYear", function(r
 app.post("/deleteFavoriteCar/:username/:vehicleId", function(req, res){
 	console.log("trying to remove edmundsID " + req.params.vehicleId + " attached to user " + req.params.username);
 	UserToCarFavoritesModel.remove( {$and: [{favoritedUsername: req.params.username}, {edmundsID: req.params.vehicleId}]}, function(err,removed)
-		{
-			console.log("within remove error: " + err);
-			console.log("within remove removed: " + removed);
-		});
+	{
+		console.log("within remove error: " + err);
+		console.log("within remove removed: " + removed);
+	});
 	res.send(200);
 });
 
@@ -221,7 +237,6 @@ app.get("/getUsersFavoritesIDs/:username", function(req, res){
 	{
 		// get a list of IDs of all cars the user likes from the relations, and find all entries in car model that match the IDs
 		result = relations.map(function(item){return item.edmundsID});
-
 		res.json(result);
 	});
 });
@@ -249,7 +264,6 @@ app.post("/follow/:username1/:username2", function(req, res){
 // unfollow user1 from user2's followers
 app.post("/unfollow/:username1/:username2", function(req, res){
 	UserToUserFollowModel.remove({followerUsername : req.params.username1, followingUsername: req.params.username2}, function (err, response){
-
 	});
 
 	res.send(200);
@@ -264,8 +278,6 @@ app.get("/getFollowers/:username", function(req, res){
 			// return all user matches
 			res.json(users);
 		});
-
-		//res.json(followers);
 	});
 });
 
@@ -277,13 +289,44 @@ app.get("/getFollowing/:username", function(req, res){
 			// return all user matches
 			res.json(users);
 		});
-
-		//res.json(followers);
 	});
 });
 
+// add a comment
+app.post("/submitVehicleComment/:username/:vehicleId/:comment", function(req, res){
+	var newComment = new UserToCarCommentModel({username: req.params.username, emundsID: req.params.vehicleId, comment: req.params.comment});
+	newComment.save();
+
+	res.send(200);
+});
+
+// add username1's comment to username2's profile
+app.post("/submitUserComment/:username1/:username2/:comment", function(req, res){
+	var newComment = new UserToUserCommentModel({username: req.params.username2, commenterUsername: req.params.username1, comment: req.params.comment});
+	newComment.save();
+
+	res.send(200);
+});
 
 /*
+
+// represent a user/s comment on a user's profile
+var UserToUserCommentSchema = new mongoose.Schema({
+	username: String,
+	commenterUsername: String,
+	comment: String,
+	date: { type: Date, default: Date.now }
+});
+
+
+// represent a user's comment on a car
+var UserToCarCommentSchema = new mongoose.Schema({
+	username: String,
+	edmundsID: String
+	comment: String,
+	date: { type: Date, default: Date.now }
+});
+
 // represent a user following another user
 var UserToUserSchema = new mongoose.Schema({
 	followerUsername: String,
