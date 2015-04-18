@@ -20,14 +20,28 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
 			$scope.profileComments = response;
 	});
 
+	$http.get("/getAllUserVehicleComments/" + $rootScope.publicUserUsername)
+		.success(function(response){
+			$scope.userCarComments = response;
+	})
+
+	$http.get("/getAllUserProfileComments/" + $rootScope.publicUserUsername)
+		.success(function(response){
+			$scope.userProfileComments = response;
+	})
+
     $scope.routeToProfilePage = function(username)
     {
-    	// we are going from a public profile to a public profile so we need to refresh all of the information
+    	// if we are going from a public profile to a public profile so we need to refresh all of the information
     	$rootScope.publicUserUsername = username;
     	$scope.refreshUserFavorites(username);
     	$scope.getFollowers(username);
     	$scope.getFollowing(username);
     	$scope.getProfileComments(username);
+    	$scope.getUserCarComments(username);
+    	$scope.getUserProfileComments(username);
+
+
 
     	// go to profile page if logged in user is clicked on
     	if ($rootScope.currentUser && (username == $rootScope.currentUser.username)){
@@ -122,6 +136,7 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
     	});
     }
 
+    // retrieve comments that have been made on this profile
     $scope.getProfileComments = function(username)
     {
     	$http.get("/getProfileComments/" + username)
@@ -130,6 +145,40 @@ app.controller("PublicProfileCtrl", function($location, $rootScope, $scope, $htt
     		//$scope.publicUserFollowings = response;
     		console.log("Retrieved comments " + response);
     	});
+    }
+
+    // retrieve all comments the current user has made on cars
+    $scope.getUserCarComments = function(username)
+    {
+    	$http.get("/getAllUserVehicleComments/" + username)
+    	.success(function(response){
+    		$scope.userCarComments = response;
+    	})
+    }
+
+    //
+    $scope.getUserProfileComments = function(username)
+    {
+    	$http.get("/getAllUserProfileComments/" + username)
+    	.success(function(response){
+    		$scope.userProfileComments = response;
+    	})
+    }
+
+    $scope.getUserCarComments = function(username)
+    {
+    	$http.get("/getAllUserVehicleComments/" + username)
+    	.success(function(response){
+    		$scope.userCarComments = response;
+    	})
+    }
+
+    $scope.getUserProfileComments = function(username)
+    {
+    	$http.get("/getAllUserProfileComments/" + username)
+    	.success(function(response){
+    		$scope.userProfileComments = response;
+    	})
     }
 
 });

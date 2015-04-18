@@ -112,12 +112,16 @@ var UserModel = mongoose.model("UserModel", UserSchema);
 // model for maintainng car data
 var CarModel = mongoose.model("CarModel", CarSchema);
 
+// model for maintaining user favorites
 var UserToCarFavoritesModel = mongoose.model("UserToCarFavoritesModel", UserToCarFavoritesSchema);
 
+// model for maintaining user follows
 var UserToUserFollowModel = mongoose.model("UserToUserFollowModel", UserToUserFollowSchema);
 
+// model for maintaining user car comments
 var UserToCarCommentModel = mongoose.model("UserToCarCommentModel", UserToCarCommentSchema);
 
+// model for maintaining user profile comments
 var UserToUserCommentModel = mongoose.model("UserToUserCommentModel", UserToUserCommentSchema);
 
 /*
@@ -154,7 +158,6 @@ app.post("/register", function (req, res){
 					if(err) {return next(err); }
 					res.json(user);
 				});
-				
 			});
 		}
 	});
@@ -218,7 +221,6 @@ app.get("/getUsersFavorites/:username", function(req, res){
 
 		// get a list of IDs of all cars the user likes from the relations, and find all entries in car model that match the IDs
 		CarModel.find({edmundsID: {$in: relations.map(function(item){ return item.edmundsID})}}, function(err, cars){
-			console.log(err);
 			console.log("cars found are ");
 			console.log(cars);
 
@@ -321,6 +323,20 @@ app.get("/getVehicleComments/:vehicleId", function(req, res){
 		res.json(comments);
 	});
 });
+
+// retrieve all comments a user has made on vehicles
+app.get("/getAllUserVehicleComments/:username", function (req, res){
+	UserToCarCommentModel.find({username: req.params.username}, function (err, comments){
+		res.json(comments);
+	})
+})
+
+// retrieve all comments a user has made on profiles
+app.get("/getAllUserProfileComments/:username", function (req, res){
+	UserToUserCommentModel.find({commenterUsername : req.params.username}, function (err, comments){
+		res.json(comments);
+	})
+})
 
 /*
 

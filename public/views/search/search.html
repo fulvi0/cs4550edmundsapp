@@ -85,16 +85,16 @@
 	                				<thead>
 	                					<tr>
 	                						<td>Model</td>
-	                						<td>Horsepower</td>
-											<td>Torque</td>
+	                						<td></td>
+											<td></td>
 	                					</tr>
 	                				</thead>
 	                				<!-- we restrict search to a single year so year[0] is always what we need to access -->
 	                				<tbody ng-repeat="vehicle in model.years[0].styles">
 	                					<tr>
 	                						<td>{{vehicle.name}}</td>
-	                						<td>row2</td>
-											<td>row3</td>
+	                						<td></td>
+											<td></td>
 	                						<td>
 	                							<button ng-if="currentUser && currentUserFavorites.indexOf(vehicle.id) == -1"
 	                								    ng-click="favoriteCar(currentUser.username, vehicle.id, vehicle.name, model.years[0].year)" class="btn btn-info pull-right">

@@ -20,6 +20,16 @@ app.controller("ProfileCtrl", function($location, $rootScope, $scope, $http, $wi
 		$scope.profileComments = response;
 	});
 
+	$http.get("/getAllUserVehicleComments/" + $rootScope.currentUser.username)
+		.success(function(response){
+		$scope.userCarComments = response;
+	})
+
+	$http.get("/getAllUserProfileComments/" + $rootScope.currentUser.username)
+		.success(function(response){
+		$scope.userProfileComments = response;
+	})
+
     $scope.goToDetailsPage = function(vehicleID)
     {
         // set rootScope to contain vehicle ID we will view
@@ -65,5 +75,21 @@ app.controller("ProfileCtrl", function($location, $rootScope, $scope, $http, $wi
     		$scope.profileComments = response;
     		console.log("Retrieved comments " + response);
     	});
+    }
+
+    $scope.getUserCarComments = function(username)
+    {
+    	$http.get("/getAllUserVehicleComments/" + username)
+    	.success(function(response){
+    		$scope.userCarComments = response;
+    	})
+    }
+
+    $scope.getUserProfileComments = function(username)
+    {
+    	$http.get("/getAllUserProfileComments/" + username)
+    	.success(function(response){
+    		$scope.userProfileComments = response;
+    	})
     }
 });

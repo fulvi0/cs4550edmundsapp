@@ -58,6 +58,32 @@
 		            </div>
 	            </div>
 
+	            <hr/>
+
+	            <!-- user comment activity -->
+	            <div class="col-lg-12" id="user-activity-container">
+	            	<div class="col-lg-12">
+	            		Recent comments by {{publicUser.username}}:
+		            	<span  
+		            		  ng-model="userCarComments" 
+		            		  ng-repeat="comment in userCarComments">
+		            		<div class="col-lg-12">
+		            			<a ng-click="goToDetailsPage(comment.edmundsID)">{{comment.comment}}</a>
+		            		</div>
+		            	</span>
+		            	<span 
+		            	      ng-model="userProfileComments" 
+		            	      ng-repeat="comment in userProfileComments">
+		            		<div class="col-lg-12">
+		            			<a ng-click="routeToProfilePage(comment.username)">{{comment.comment}}</a>
+		            		</div>
+		            	</span>
+						<span ng-if="!userProfileComments.length && !userCarComments.length">
+							None yet!
+		            	</span>
+		            </div>
+	            </div>
+
 	             <hr/>
 
 
